@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+
+# Build outputs
+.next
+out
+build
+dist
+
+# Cache
+.cache
+.turbo
+
+# Environment files
+.env
+.env.local
+.env.production.local
+.env.development.local
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# Other
+coverage
+next-env.d.ts
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
