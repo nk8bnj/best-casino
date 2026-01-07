@@ -26,12 +26,14 @@ Before you begin, ensure you have the following installed:
 ### Installation
 
 1. Clone the repository:
+
 ```bash
 git clone git@github.com:nk8bnj/best-casino.git
 cd best-casino
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 # or
