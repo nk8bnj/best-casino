@@ -12,7 +12,6 @@ Best Casino is a web-based casino application that provides an engaging gaming e
 - **Frontend**: [React 19.2.3](https://react.dev)
 - **Language**: [TypeScript 5](https://www.typescriptlang.org)
 - **Styling**: [Tailwind CSS 4](https://tailwindcss.com)
-- **Font**: [Geist](https://vercel.com/font) (optimized via next/font)
 
 ## Prerequisites
 

@@ -1,26 +1,172 @@
 @import "tailwindcss";
 
+/* CSS Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Background Colors */
+  --background: linear-gradient(180deg, #0f0c29 0%, #312c5f 50%, #24243e 100%);
+  --background-dark: #12131f;
+  --background-card: #100f22;
+  --foreground: #ffffff;
+
+  /* Primary Colors (Pink/Coral) */
+  --primary: #ff5c7c;
+  --primary-dark: #ff4060;
+  --primary-light: #ff6b89;
+
+  /* Secondary Colors (Purple) */
+  --secondary: #8b5cf6;
+  --secondary-dark: #7c3aed;
+  --secondary-light: #a78bfa;
+
+  /* Accent Colors */
+  --accent-blue: #6b8cff;
+  --accent-yellow: #fbbf24;
+
+  /* Text Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0b8;
+  --text-muted: #6b7280;
+
+  /* Status Colors */
+  --error: #ff4060;
+  --success: #10b981;
+  --warning: #fbbf24;
 }
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
+  --color-background-dark: var(--background-dark);
+  --color-background-card: var(--background-card);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-light: var(--primary-light);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-dark: var(--secondary-dark);
+  --color-secondary-light: var(--secondary-light);
+
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-yellow: var(--accent-yellow);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-error: var(--error);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+
+  /* Background Gradients */
+  --color-gradient-primary-from: #ff5c7c;
+  --color-gradient-primary-to: #ff4060;
+  --color-gradient-secondary-from: #8b5cf6;
+  --color-gradient-secondary-to: #7c3aed;
+  --color-gradient-accent-from: #6b8cff;
+  --color-gradient-accent-to: #8b5cf6;
+
+  /* Border Radius */
+  --radius-sm: 0.5rem;
+  --radius: 0.75rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 1.75rem;
+  --radius-2xl: 2rem;
+  --radius-full: 9999px;
+
+  /* Box Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --shadow-button: 0 4px 16px rgba(255, 92, 124, 0.4);
+  --shadow-glow-primary: 0 0 40px rgba(255, 92, 124, 0.6);
+  --shadow-glow-secondary: 0 0 40px rgba(139, 92, 246, 0.6);
+
+  /* Fonts */
+  --font-satoshi: var(--font-satoshi);
+  --font-inter: var(--font-inter);
+  --font-manrope: var(--font-manrope);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family:
+    var(--font-satoshi),
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+/* Custom Gradient Utilities */
+.bg-gradient-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-gradient-primary-from) 0%,
+    var(--color-gradient-primary-to) 100%
+  );
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(
+    135deg,
+    var(--color-gradient-secondary-from) 0%,
+    var(--color-gradient-secondary-to) 100%
+  );
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(
+    135deg,
+    var(--color-gradient-accent-from) 0%,
+    var(--color-gradient-accent-to) 100%
+  );
+}
+
+/* Custom Shadow Utilities */
+.shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+.shadow-button {
+  box-shadow: var(--shadow-button);
+}
+
+.shadow-glow-primary {
+  box-shadow: var(--shadow-glow-primary);
+}
+
+.shadow-glow-secondary {
+  box-shadow: var(--shadow-glow-secondary);
 }
