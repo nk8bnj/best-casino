@@ -12,43 +12,51 @@ import {
   AuthFormFooter,
 } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
-import { loginSchema, type LoginFormData } from "@/utils/schemas";
+import { registerSchema, type RegisterFormData } from "@/utils/schemas";
 import { validatePassword } from "@/utils/validation";
 
-interface LoginFormProps {
-  onSubmit?: (data: LoginFormData) => void;
+interface RegisterFormProps {
+  onSubmit?: (data: RegisterFormData) => void;
 }
 
-export function LoginForm({ onSubmit }: LoginFormProps) {
+export function RegisterForm({ onSubmit }: RegisterFormProps) {
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors, isSubmitted },
-  } = useForm<LoginFormData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
     mode: "onSubmit",
   });
 
   const password = watch("password", "");
   const passwordRequirements = validatePassword(password);
 
-  const handleFormSubmit = (data: LoginFormData) => {
+  const handleFormSubmit = (data: RegisterFormData) => {
     if (onSubmit) {
       onSubmit(data);
     } else {
-      console.log("Login:", data);
+      console.log("Register:", data);
     }
   };
 
   return (
     <AuthFormCard>
-      <AuthFormHeader subtitle="Welcome back!" />
+      <AuthFormHeader subtitle="Create your account" />
 
       <form
         onSubmit={handleSubmit(handleFormSubmit)}
         className="space-y-4 text-left"
       >
+        <Input
+          label="Username"
+          type="text"
+          placeholder="Username"
+          {...register("username")}
+          error={isSubmitted ? errors.username?.message : ""}
+        />
+
         <Input
           label="Email"
           type="email"
@@ -69,6 +77,13 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
           show={isSubmitted}
         />
 
+        <PasswordInput
+          label="Confirm Password"
+          placeholder="Confirm Password"
+          {...register("confirmPassword")}
+          error={isSubmitted ? errors.confirmPassword?.message : ""}
+        />
+
         <div className="mt-8">
           <Button
             type="submit"
@@ -77,15 +92,15 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
             fullWidth
             rightIcon={<ArrowRightIcon />}
           >
-            Log in
+            Sign up
           </Button>
         </div>
       </form>
 
       <AuthFormFooter
-        linkText="Don't have an account?"
-        linkLabel="Register"
-        linkHref="/register"
+        linkText="Already have an account?"
+        linkLabel="Login"
+        linkHref="/login"
       />
     </AuthFormCard>
   );
