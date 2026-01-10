@@ -4,3 +4,6 @@ export { PasswordInput } from "./PasswordInput";
 export { FormError } from "./FormError";
 export { Logo } from "./Logo";
 export { PasswordRequirements } from "./PasswordRequirements";
+export { AuthFormCard } from "./AuthFormCard";
+export { AuthFormHeader } from "./AuthFormHeader";
+export { AuthFormFooter } from "./AuthFormFooter";

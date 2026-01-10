@@ -26,3 +26,24 @@ export const EMAIL_ERROR_MESSAGES = {
 } as const;
 
 export const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Username validation constants
+export const USERNAME_RULES = {
+  MIN_LENGTH: 3,
+  MAX_LENGTH: 20,
+  REGEX: /^[a-zA-Z0-9_-]+$/,
+} as const;
+
+export const USERNAME_ERROR_MESSAGES = {
+  REQUIRED: "Username is required",
+  MIN_LENGTH: "Username must be at least 3 characters",
+  MAX_LENGTH: "Username must be at most 20 characters",
+  INVALID_CHARS:
+    "Username can only contain letters, numbers, underscores, and hyphens",
+} as const;
+
+// Confirm password validation constants
+export const CONFIRM_PASSWORD_ERROR_MESSAGES = {
+  REQUIRED: "Please confirm your password",
+  NO_MATCH: "Passwords do not match",
+} as const;
