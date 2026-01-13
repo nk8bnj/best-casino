@@ -10,16 +10,21 @@ import {
   AuthFormCard,
   AuthFormHeader,
   AuthFormFooter,
+  FormError,
 } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
 import { registerSchema, type RegisterFormData } from "@/utils/schemas";
 import { validatePassword } from "@/utils/validation";
+import { useRegister } from "@/hooks/api/useRegister";
+import { getErrorMessage, handleApiError } from "@/lib/utils/errors";
 
 interface RegisterFormProps {
   onSubmit?: (data: RegisterFormData) => void;
 }
 
 export function RegisterForm({ onSubmit }: RegisterFormProps) {
+  const { mutate: registerUser, isPending, error } = useRegister();
+
   const {
     register,
     handleSubmit,
@@ -37,7 +42,9 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     if (onSubmit) {
       onSubmit(data);
     } else {
-      console.log("Register:", data);
+      // Remove confirmPassword before sending to API
+      const { confirmPassword: _confirmPassword, ...userData } = data;
+      registerUser(userData);
     }
   };
 
@@ -69,7 +76,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           label="Password"
           placeholder="Password"
           {...register("password")}
-          error={isSubmitted ? "Password must contain" : ""}
+          error={isSubmitted ? errors.password?.message : ""}
         />
 
         <PasswordRequirements
@@ -84,6 +91,10 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           error={isSubmitted ? errors.confirmPassword?.message : ""}
         />
 
+        {error && (
+          <FormError message={getErrorMessage(handleApiError(error))} />
+        )}
+
         <div className="mt-8">
           <Button
             type="submit"
@@ -91,8 +102,9 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
             size="md"
             fullWidth
             rightIcon={<ArrowRightIcon />}
+            disabled={isPending}
           >
-            Sign up
+            {isPending ? "Creating account..." : "Sign up"}
           </Button>
         </div>
       </form>
