@@ -21,8 +21,10 @@ export function Button({
   disabled,
   ...props
 }: ButtonProps) {
+  const isDisabled = disabled || isLoading;
+
   const baseClasses =
-    "inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-[6.25rem] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
+    "inline-flex items-center justify-center font-semibold transition-all duration-200 rounded-[6.25rem] cursor-pointer disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2";
 
   const sizeClasses = {
     sm: "px-4 py-2 text-sm",
@@ -30,22 +32,31 @@ export function Button({
     lg: "px-8 py-4 text-lg",
   };
 
-  const variantClasses = {
-    primary:
-      "bg-gradient-primary shadow-button hover:shadow-glow-primary hover:scale-105 text-white",
-    secondary:
-      "bg-gradient-secondary shadow-button hover:shadow-glow-secondary hover:scale-105 text-white",
-    outline:
-      "border-2 border-primary text-primary hover:bg-primary/10 hover:scale-105",
-    ghost: "text-text-secondary hover:text-text-primary hover:bg-white/5",
+  const getVariantClasses = () => {
+    if (variant === "primary") {
+      return isDisabled
+        ? "bg-gradient-primary-disabled text-white shadow-none"
+        : "bg-gradient-primary text-white hover:shadow-glow-primary active:bg-gradient-primary-pressed active:shadow-button";
+    }
+
+    const variantClasses = {
+      secondary:
+        "bg-gradient-secondary shadow-button hover:shadow-glow-secondary hover:scale-105 text-white disabled:opacity-50",
+      outline:
+        "border-2 border-primary text-primary hover:bg-primary/10 hover:scale-105 disabled:opacity-50",
+      ghost:
+        "text-text-secondary hover:text-text-primary hover:bg-white/5 disabled:opacity-50",
+    };
+
+    return variantClasses[variant];
   };
 
   const widthClass = fullWidth ? "w-full" : "";
 
   return (
     <button
-      className={`${baseClasses} ${sizeClasses[size]} ${variantClasses[variant]} ${widthClass} ${className}`}
-      disabled={disabled || isLoading}
+      className={`${baseClasses} ${sizeClasses[size]} ${getVariantClasses()} ${widthClass} ${className}`}
+      disabled={isDisabled}
       {...props}
     >
       <span className="flex items-center justify-center min-w-5">

@@ -42,9 +42,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     if (onSubmit) {
       onSubmit(data);
     } else {
-      // Remove confirmPassword before sending to API
-      const { confirmPassword: _confirmPassword, ...userData } = data;
-      registerUser(userData);
+      registerUser(data);
     }
   };
 
@@ -59,7 +57,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         <Input
           label="Username"
           type="text"
-          placeholder="Username"
+          placeholder="Enter username"
           {...register("username")}
           error={isSubmitted ? errors.username?.message : ""}
         />
@@ -67,14 +65,14 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         <Input
           label="Email"
           type="email"
-          placeholder="Email"
+          placeholder="Enter email"
           {...register("email")}
           error={isSubmitted ? errors.email?.message : ""}
         />
 
         <PasswordInput
           label="Password"
-          placeholder="Password"
+          placeholder="Enter password"
           {...register("password")}
           error={isSubmitted ? errors.password?.message : ""}
         />
@@ -82,13 +80,6 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         <PasswordRequirements
           requirements={passwordRequirements}
           show={isSubmitted}
-        />
-
-        <PasswordInput
-          label="Confirm Password"
-          placeholder="Confirm Password"
-          {...register("confirmPassword")}
-          error={isSubmitted ? errors.confirmPassword?.message : ""}
         />
 
         {error && (

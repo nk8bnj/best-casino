@@ -51,14 +51,14 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         <Input
           label="Email"
           type="email"
-          placeholder="Email"
+          placeholder="Enter email"
           {...register("email")}
           error={isSubmitted ? errors.email?.message : ""}
         />
 
         <PasswordInput
           label="Password"
-          placeholder="Password"
+          placeholder="Enter password"
           {...register("password")}
           error={isSubmitted ? errors.password?.message : ""}
         />

@@ -17,12 +17,11 @@ export function AuthFormFooter({
     <>
       <div className={`pb-4 border-b border-gray-700 ${className}`}>
         <p className="text-center text-sm text-text-secondary mt-8">
-          {linkText}{" "}
           <Link
             href={linkHref}
-            className="text-accent-blue underline font-medium"
+            className="text-accent-blue font-medium hover:text-accent-blue-hover active:text-accent-blue-pressed transition-colors"
           >
-            {linkLabel}
+            {linkText} {linkLabel}
           </Link>
         </p>
       </div>

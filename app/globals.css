@@ -4,10 +4,10 @@ html {
   scroll-behavior: smooth;
 }
 
-:focus-visible {
+/* :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
-}
+} */
 
 :root {
   /* Background Colors */
@@ -27,8 +27,11 @@ html {
   --secondary-light: #a78bfa;
 
   /* Accent Colors */
-  --accent-blue: #6b8cff;
+  --accent-blue: #51a2ff;
+  --accent-blue-hover: #aad2ff;
+  --accent-blue-pressed: #1f73d1;
   --accent-yellow: #fbbf24;
+  --accent-purple: #887bff;
 
   /* Text Colors */
   --text-primary: #ffffff;
@@ -38,6 +41,7 @@ html {
   /* Status Colors */
   --error: #ff4060;
   --success: #10b981;
+  --success-green: #82c91e;
   --warning: #fbbf24;
 }
 
@@ -57,6 +61,8 @@ html {
   --color-secondary-light: var(--secondary-light);
 
   --color-accent-blue: var(--accent-blue);
+  --color-accent-blue-hover: var(--accent-blue-hover);
+  --color-accent-blue-pressed: var(--accent-blue-pressed);
   --color-accent-yellow: var(--accent-yellow);
 
   --color-text-primary: var(--text-primary);
@@ -68,8 +74,14 @@ html {
   --color-warning: var(--warning);
 
   /* Background Gradients */
-  --color-gradient-primary-from: #ff5c7c;
-  --color-gradient-primary-to: #ff4060;
+  --color-gradient-primary-from: #ff417b;
+  --color-gradient-primary-to: #ff0047;
+  --color-gradient-primary-hover-from: #ff417b;
+  --color-gradient-primary-hover-to: #ff0047;
+  --color-gradient-primary-pressed-from: #ff185f;
+  --color-gradient-primary-pressed-to: #ba0034;
+  --color-gradient-primary-disabled-from: #ff9bb9;
+  --color-gradient-primary-disabled-to: #ff6892;
   --color-gradient-secondary-from: #8b5cf6;
   --color-gradient-secondary-to: #7c3aed;
   --color-gradient-accent-from: #6b8cff;
@@ -118,9 +130,29 @@ body {
 /* Custom Gradient Utilities */
 .bg-gradient-primary {
   background: linear-gradient(
-    135deg,
     var(--color-gradient-primary-from) 0%,
     var(--color-gradient-primary-to) 100%
+  );
+}
+
+.bg-gradient-primary-hover {
+  background: linear-gradient(
+    var(--color-gradient-primary-hover-from) 0%,
+    var(--color-gradient-primary-hover-to) 100%
+  );
+}
+
+.bg-gradient-primary-pressed {
+  background: linear-gradient(
+    var(--color-gradient-primary-pressed-from) 0%,
+    var(--color-gradient-primary-pressed-to) 100%
+  );
+}
+
+.bg-gradient-primary-disabled {
+  background: linear-gradient(
+    var(--color-gradient-primary-disabled-from) 0%,
+    var(--color-gradient-primary-disabled-to) 100%
   );
 }
 
