@@ -1,6 +1,6 @@
 # Best Casino
 
-A modern, high-performance casino platform built with Next.js, React, and TypeScript.
+A modern, high-performance casino platform built with Next.js, React and TypeScript.
 
 ## Overview
 
