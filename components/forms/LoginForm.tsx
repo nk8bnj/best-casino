@@ -6,38 +6,37 @@ import {
   Button,
   Input,
   PasswordInput,
-  PasswordRequirements,
   AuthFormCard,
   AuthFormHeader,
   AuthFormFooter,
+  FormError,
 } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
 import { loginSchema, type LoginFormData } from "@/utils/schemas";
-import { validatePassword } from "@/utils/validation";
+import { useLogin } from "@/hooks/api/useLogin";
+import { getErrorMessage, handleApiError } from "@/lib/utils/errors";
 
 interface LoginFormProps {
   onSubmit?: (data: LoginFormData) => void;
 }
 
 export function LoginForm({ onSubmit }: LoginFormProps) {
+  const { mutate: login, isPending, error } = useLogin();
+
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors, isSubmitted },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     mode: "onSubmit",
   });
 
-  const password = watch("password", "");
-  const passwordRequirements = validatePassword(password);
-
   const handleFormSubmit = (data: LoginFormData) => {
     if (onSubmit) {
       onSubmit(data);
     } else {
-      console.log("Login:", data);
+      login(data);
     }
   };
 
@@ -52,22 +51,21 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
         <Input
           label="Email"
           type="email"
-          placeholder="Email"
+          placeholder="Enter email"
           {...register("email")}
           error={isSubmitted ? errors.email?.message : ""}
         />
 
         <PasswordInput
           label="Password"
-          placeholder="Password"
+          placeholder="Enter password"
           {...register("password")}
-          error={isSubmitted ? "Password must contain" : ""}
+          error={isSubmitted ? errors.password?.message : ""}
         />
 
-        <PasswordRequirements
-          requirements={passwordRequirements}
-          show={isSubmitted}
-        />
+        {error && (
+          <FormError message={getErrorMessage(handleApiError(error))} />
+        )}
 
         <div className="mt-8">
           <Button
@@ -76,8 +74,9 @@ export function LoginForm({ onSubmit }: LoginFormProps) {
             size="md"
             fullWidth
             rightIcon={<ArrowRightIcon />}
+            disabled={isPending}
           >
-            Log in
+            {isPending ? "Logging in..." : "Log in"}
           </Button>
         </div>
       </form>

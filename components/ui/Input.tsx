@@ -4,6 +4,7 @@ import { FormError } from "./FormError";
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string;
+  success?: boolean;
   helperText?: string;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
@@ -26,13 +27,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
 ) {
   const inputId = id || label?.toLowerCase().replace(/\s+/g, "-");
 
-  const inputClasses = `w-full px-2.5 py-3 bg-white border rounded-sm text-gray-900 placeholder:text-gray-400 focus:outline-none transition-all duration-200 ${
+  const inputClasses = `w-full px-2.5 py-3 bg-white border rounded-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--accent-purple)] transition-all duration-200 ${
     leftIcon ? "pl-10" : ""
-  } ${rightIcon ? "pr-10" : ""} ${
-    error
-      ? "border-error focus:border-error focus:ring-2 focus:ring-error/20"
-      : "border-gray-300 focus:border-accent-blue focus:ring-2 focus:ring-accent-blue/20"
-  } ${className}`;
+  } ${rightIcon ? "pr-10" : ""} ${className}`;
 
   return (
     <div className={containerClassName}>

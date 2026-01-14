@@ -10,16 +10,21 @@ import {
   AuthFormCard,
   AuthFormHeader,
   AuthFormFooter,
+  FormError,
 } from "@/components/ui";
 import { ArrowRightIcon } from "@/components/icons";
 import { registerSchema, type RegisterFormData } from "@/utils/schemas";
 import { validatePassword } from "@/utils/validation";
+import { useRegister } from "@/hooks/api/useRegister";
+import { getErrorMessage, handleApiError } from "@/lib/utils/errors";
 
 interface RegisterFormProps {
   onSubmit?: (data: RegisterFormData) => void;
 }
 
 export function RegisterForm({ onSubmit }: RegisterFormProps) {
+  const { mutate: registerUser, isPending, error } = useRegister();
+
   const {
     register,
     handleSubmit,
@@ -37,7 +42,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
     if (onSubmit) {
       onSubmit(data);
     } else {
-      console.log("Register:", data);
+      registerUser(data);
     }
   };
 
@@ -52,7 +57,7 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         <Input
           label="Username"
           type="text"
-          placeholder="Username"
+          placeholder="Enter username"
           {...register("username")}
           error={isSubmitted ? errors.username?.message : ""}
         />
@@ -60,16 +65,16 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
         <Input
           label="Email"
           type="email"
-          placeholder="Email"
+          placeholder="Enter email"
           {...register("email")}
           error={isSubmitted ? errors.email?.message : ""}
         />
 
         <PasswordInput
           label="Password"
-          placeholder="Password"
+          placeholder="Enter password"
           {...register("password")}
-          error={isSubmitted ? "Password must contain" : ""}
+          error={isSubmitted ? errors.password?.message : ""}
         />
 
         <PasswordRequirements
@@ -77,12 +82,9 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
           show={isSubmitted}
         />
 
-        <PasswordInput
-          label="Confirm Password"
-          placeholder="Confirm Password"
-          {...register("confirmPassword")}
-          error={isSubmitted ? errors.confirmPassword?.message : ""}
-        />
+        {error && (
+          <FormError message={getErrorMessage(handleApiError(error))} />
+        )}
 
         <div className="mt-8">
           <Button
@@ -91,8 +93,9 @@ export function RegisterForm({ onSubmit }: RegisterFormProps) {
             size="md"
             fullWidth
             rightIcon={<ArrowRightIcon />}
+            disabled={isPending}
           >
-            Sign up
+            {isPending ? "Creating account..." : "Sign up"}
           </Button>
         </div>
       </form>
