@@ -7,18 +7,20 @@ import type {
   CurrentUserResponse,
 } from "@/types/auth.types";
 
-export const authApi = {
-  login: async (credentials: LoginRequest): Promise<AuthResponse> => {
+class AuthApi {
+  async login(credentials: LoginRequest): Promise<AuthResponse> {
     return apiClient.post<AuthResponse>(API_ENDPOINTS.AUTH.LOGIN, credentials);
-  },
+  }
 
-  register: async (userData: RegisterRequest): Promise<AuthResponse> => {
+  async register(userData: RegisterRequest): Promise<AuthResponse> {
     return apiClient.post<AuthResponse>(API_ENDPOINTS.AUTH.REGISTER, userData);
-  },
+  }
 
-  getCurrentUser: async (): Promise<CurrentUserResponse> => {
+  async getCurrentUser(): Promise<CurrentUserResponse> {
     return apiClient.get<CurrentUserResponse>(API_ENDPOINTS.AUTH.CURRENT_USER, {
       requiresAuth: true,
     });
-  },
-};
+  }
+}
+
+export const authApi = new AuthApi();

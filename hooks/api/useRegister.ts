@@ -6,18 +6,19 @@ import type { RegisterRequest, AuthResponse } from "@/types/auth.types";
 import { handleApiError, getErrorMessage } from "@/lib/utils/errors";
 import { ROUTES } from "@/config/routes";
 import { QUERY_KEYS } from "@/lib/api/endpoints";
+import { tokenStorageService } from "@/lib/utils/token";
 
 export const useRegister = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { setUser, setToken } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   return useMutation<AuthResponse, Error, RegisterRequest>({
     mutationFn: authApi.register,
 
     onSuccess: (data) => {
       // 1. Store token
-      setToken(data.accessToken);
+      tokenStorageService.set(data.accessToken);
 
       // 2. Update auth store
       setUser(data.user);

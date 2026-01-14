@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 import type { User } from "@/types/auth.types";
-import { tokenStorage } from "@/lib/utils/token";
+import { tokenStorageService } from "@/lib/utils/token";
 
 interface AuthState {
   // State
@@ -10,7 +10,6 @@ interface AuthState {
 
   // Actions
   setUser: (user: User | null) => void;
-  setToken: (token: string) => void;
   logout: () => void;
   hydrateAuth: () => void;
 }
@@ -29,14 +28,9 @@ export const useAuthStore = create<AuthState>()(
           isAuthenticated: !!user,
         }),
 
-      // Set token in storage
-      setToken: (token) => {
-        tokenStorage.set(token);
-      },
-
       // Logout: clear user and token
       logout: () => {
-        tokenStorage.remove();
+        tokenStorageService.remove();
         set({
           user: null,
           isAuthenticated: false,
@@ -45,7 +39,7 @@ export const useAuthStore = create<AuthState>()(
 
       // Hydrate auth state on app load
       hydrateAuth: () => {
-        const token = tokenStorage.get();
+        const token = tokenStorageService.get();
         if (token) {
           // Token exists, but we need to fetch user data
           // This will be handled by useCurrentUser hook

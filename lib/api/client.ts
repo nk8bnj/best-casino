@@ -1,5 +1,5 @@
 import { ApiException } from "@/lib/utils/errors";
-import { tokenStorage } from "@/lib/utils/token";
+import { tokenStorageService } from "@/lib/utils/token";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -32,7 +32,7 @@ class ApiClient {
 
     // Add authorization header if required
     if (requiresAuth) {
-      const token = tokenStorage.get();
+      const token = tokenStorageService.get();
       if (token) {
         requestHeaders["Authorization"] = `Bearer ${token}`;
       }
