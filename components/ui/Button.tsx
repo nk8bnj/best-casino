@@ -39,9 +39,13 @@ export function Button({
         : "bg-gradient-primary text-white hover:shadow-glow-primary active:bg-gradient-primary-pressed active:shadow-button";
     }
 
+    if (variant === "secondary") {
+      return isDisabled
+        ? "bg-gradient-secondary-disabled text-white shadow-none"
+        : "bg-gradient-secondary text-white shadow-button hover:shadow-glow-secondary hover:scale-105 active:bg-gradient-secondary-pressed active:shadow-button";
+    }
+
     const variantClasses = {
-      secondary:
-        "bg-gradient-secondary shadow-button hover:shadow-glow-secondary hover:scale-105 text-white disabled:opacity-50",
       outline:
         "border-2 border-primary text-primary hover:bg-primary/10 hover:scale-105 disabled:opacity-50",
       ghost:
