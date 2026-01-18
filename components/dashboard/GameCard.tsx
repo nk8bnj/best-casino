@@ -22,7 +22,7 @@ export function GameCard({ game }: GameCardProps) {
   const backgroundImage = getGameBackground(game.id);
 
   return (
-    <div className="relative w-full flex-shrink-0 rounded-2xl overflow-hidden bg-gradient-to-b from-[#2a2555] to-[#1a1a2e] shadow-lg h-full">
+    <div className="relative w-full shrink-0 rounded-2xl overflow-hidden bg-linear-to-b from-[#2a2555] to-[#1a1a2e] shadow-lg h-full">
       {/* Tag */}
       {game.tag && (
         <div className="absolute top-3 left-3 z-10">
@@ -31,7 +31,7 @@ export function GameCard({ game }: GameCardProps) {
       )}
 
       {/* Background Image */}
-      <div className="aspect-[4/5] relative overflow-hidden h-full">
+      <div className="aspect-4/5 relative overflow-hidden h-full">
         <Image
           src={backgroundImage}
           alt={game.name}

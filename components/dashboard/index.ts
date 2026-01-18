@@ -5,7 +5,6 @@ export { SideDrawer } from "./SideDrawer";
 export { DrawerMenuItem } from "./DrawerMenuItem";
 export { GameTag } from "./GameTag";
 export { GameCard } from "./GameCard";
-export { GameCarousel } from "./GameCarousel";
 export { GameGrid } from "./GameGrid";
 export { GamesSection } from "./GamesSection";
 export { LeaderboardRow } from "./LeaderboardRow";

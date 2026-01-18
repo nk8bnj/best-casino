@@ -20,7 +20,7 @@ const getGameBackground = (gameId: string): string => {
 
 export function GameGrid({ games }: GameGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-[24px]">
+    <div className="grid grid-cols-2 gap-4 max-w-[400px] lg:max-w-none mx-auto md:gap-[24px] ">
       {games.map((game) => {
         const backgroundImage = getGameBackground(game.id);
         return (
@@ -50,7 +50,7 @@ export function GameGrid({ games }: GameGridProps) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
             {/* Content */}
-            <div className="absolute bottom-0 left-0 right-0 py-5 px-10 text-center">
+            <div className="absolute bottom-0 left-0 right-0 py-5 md:px-10 text-center">
               <h3 className="text-white font-black text-[32px] mb-2">
                 {game.name}
               </h3>

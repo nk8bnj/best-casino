@@ -56,7 +56,7 @@ export function ChatModal({ messages, stats }: ChatModalProps) {
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-md h-[85vh] rounded-t-[32px] flex flex-col animate-slide-up bg-[radial-gradient(120%_120%_at_50%_0%,#2c2e5a_0%,#202045_35%,#191937_70%,#15152f_100%)] shadow-[0_20px_50px_rgba(8,7,23,0.6)] ring-1 ring-white/5"
+        className="relative w-full max-w-md h-[85vh] rounded-t-[32px] flex flex-col animate-slide-up bg-[radial-gradient(120%_120%_at_50%_0%,#2c2e5a_0%,#202045_35%,#191937_70%,#15152f_100%)] shadow-[0_20px_50px_rgba(8,7,23,0.6)]"
         style={{
           animation: "slideUp 0.3s ease-out",
         }}
@@ -79,13 +79,13 @@ export function ChatModal({ messages, stats }: ChatModalProps) {
           />
           <div className="w-10" /> {/* Spacer for centering */}
         </div>
-        <div className="mx-auto h-px w-[78%] bg-linear-to-r from-transparent via-white/40 to-transparent" />
+        <div className="mx-auto h-px w-[100%] bg-linear-to-r from-transparent via-white/40 to-transparent" />
 
         {/* Stats */}
         <ChatStatsBar stats={stats} />
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto px-5 pt-2 scrollbar-hide space-y-4">
+        <div className="flex-1 overflow-y-auto pl-10 pr-5 pt-4 scrollbar-hide space-y-2">
           {messages.map((message) => (
             <ChatMessage key={message.id} message={message} />
           ))}
