@@ -139,6 +139,10 @@ body {
     sans-serif;
 }
 
+button {
+  cursor: pointer;
+}
+
 /* Custom Gradient Utilities */
 .bg-gradient-primary {
   background: linear-gradient(
@@ -254,7 +258,7 @@ body {
   background: transparent;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 1280px) {
   .sticky-header {
     background: var(--background);
   }

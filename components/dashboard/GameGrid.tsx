@@ -20,7 +20,7 @@ const getGameBackground = (gameId: string): string => {
 
 export function GameGrid({ games }: GameGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 max-w-[400px] lg:max-w-none mx-auto md:gap-[24px] ">
+    <div className="grid grid-cols-2 gap-4 max-w-[400px] md:max-w-none mx-auto md:gap-6">
       {games.map((game) => {
         const backgroundImage = getGameBackground(game.id);
         return (
@@ -42,7 +42,7 @@ export function GameGrid({ games }: GameGridProps) {
                 alt={game.name}
                 fill
                 className="object-cover"
-                sizes="(max-width: 768px) 50vw, 25vw"
+                sizes="(max-width: 768px) 50vw, (max-width: 1280px) 35vw, 25vw"
               />
             </div>
 
@@ -57,7 +57,7 @@ export function GameGrid({ games }: GameGridProps) {
               <p className="text-gray-300 text-sm mb-4 line-clamp-2">
                 {game.description}
               </p>
-              <button className="bg-gradient-primary text-white text-md font-semibold py-3 px-12 rounded-full hover:shadow-glow-primary transition-all">
+              <button className="bg-gradient-primary text-white text-md font-semibold py-3 px-8 lg:px-12 rounded-full hover:shadow-glow-primary transition-all">
                 Free play
               </button>
             </div>

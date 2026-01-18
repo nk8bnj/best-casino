@@ -179,9 +179,9 @@ export default function DashboardPage() {
       <SideDrawer />
 
       {/* Main Content */}
-      <main className="max-w-[1440px] mx-auto px-4 lg:px-8 pb-24 lg:pb-8">
-        {/* Mobile Layout: Stacked */}
-        <div className="lg:hidden">
+      <main className="max-w-[1440px] mx-auto px-4 md:px-6 xl:px-8 pb-24 xl:pb-8">
+        {/* Mobile Layout: Stacked (< 768px) */}
+        <div className="md:hidden">
           <GamesSection games={mockGames} />
           <LeaderboardSection
             players={mockPlayers.slice(0, 3)}
@@ -189,8 +189,24 @@ export default function DashboardPage() {
           />
         </div>
 
-        {/* Desktop Layout: Three Columns */}
-        <div className="hidden lg:grid lg:grid-cols-[280px_1fr_300px] lg:gap-[93px] lg:py-6">
+        {/* Tablet Layout: Two Columns (768px - 1280px) */}
+        <div className="hidden md:grid md:grid-cols-[240px_1fr] md:gap-6 md:py-6 xl:hidden">
+          {/* Left Column: Leaderboard */}
+          <aside>
+            <LeaderboardSection
+              players={mockPlayers.slice(0, 5)}
+              currentUserId={CURRENT_USER_ID}
+            />
+          </aside>
+
+          {/* Right Column: Games */}
+          <section>
+            <GamesSection games={mockGames} />
+          </section>
+        </div>
+
+        {/* Desktop Layout: Three Columns (1280px+) */}
+        <div className="hidden xl:grid xl:grid-cols-[280px_1fr_300px] xl:gap-12 xl:py-6">
           {/* Left Column: Leaderboard */}
           <aside>
             <LeaderboardSection
@@ -211,13 +227,13 @@ export default function DashboardPage() {
         </div>
       </main>
 
-      {/* Chat FAB - mobile only */}
-      <div className="lg:hidden">
+      {/* Chat FAB - mobile and tablet */}
+      <div className="xl:hidden">
         <ChatFAB />
       </div>
 
-      {/* Chat Modal - mobile only */}
-      <div className="lg:hidden">
+      {/* Chat Modal - mobile and tablet */}
+      <div className="xl:hidden">
         <ChatModal messages={mockMessages} stats={mockChatStats} />
       </div>
     </div>
