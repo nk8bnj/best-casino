@@ -49,14 +49,14 @@ export function ChatModal({ messages, stats }: ChatModalProps) {
     <div className="fixed inset-0 z-50 flex items-end justify-center">
       {/* Overlay */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+        className="absolute inset-0 bg-black/60"
         onClick={closeChat}
         aria-hidden="true"
       />
 
       {/* Modal */}
       <div
-        className="relative w-full max-w-md h-[85vh] rounded-t-[32px] flex flex-col animate-slide-up bg-[radial-gradient(120%_120%_at_50%_0%,#2c2e5a_0%,#202045_35%,#191937_70%,#15152f_100%)] shadow-[0_20px_50px_rgba(8,7,23,0.6)]"
+        className="relative w-full h-[calc(100dvh-100px)] rounded-t-[16px] flex flex-col animate-slide-up bg-[radial-gradient(120%_120%_at_50%_0%,#2c2e5a_0%,#202045_35%,#191937_70%,#15152f_100%)] shadow-[0_20px_50px_rgba(8,7,23,0.6)]"
         style={{
           animation: "slideUp 0.3s ease-out",
         }}
