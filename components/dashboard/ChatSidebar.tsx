@@ -16,7 +16,7 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ messages, stats }: ChatSidebarProps) {
   return (
-    <div className="relative h-full flex flex-col pb-5 pt-5 rounded-[28px]">
+    <div className="relative h-full flex flex-col rounded-[28px]">
       {/* Header */}
       <div className="text-center pb-3 pt-1">
         <Image

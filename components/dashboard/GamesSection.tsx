@@ -9,7 +9,7 @@ interface GamesSectionProps {
 
 export function GamesSection({ games }: GamesSectionProps) {
   return (
-    <section className="py-4">
+    <section className="py-8">
       {/* Mobile & Desktop: Grid */}
       <GameGrid games={games} />
     </section>
