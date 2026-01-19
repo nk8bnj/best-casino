@@ -1,0 +1,50 @@
+"use client";
+
+import Image from "next/image";
+import type { ChatMessage as ChatMessageType } from "@/types/dashboard.types";
+import { VIPBadge } from "./VIPBadge";
+
+interface ChatMessageProps {
+  message: ChatMessageType;
+}
+
+export function ChatMessage({ message }: ChatMessageProps) {
+  return (
+    <div className="relative pt-3 overflow-visible">
+      {/* Avatar - positioned absolute, overlapping top-left */}
+      <div className="absolute -top-2 -left-7 flex items-center justify-center z-10 w-14 h-14 shrink-0">
+        <div className="relative w-10 h-10 rounded-full overflow-hidden ring-2 ring-[#f3b24d] bg-linear-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-[0_0_8px_4px_rgba(255,184,77,0.7)]">
+          {message.avatar ? (
+            <Image
+              src={message.avatar}
+              alt={message.username}
+              width={56}
+              height={56}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-white font-semibold text-base">
+              {message.username.charAt(0).toUpperCase()}
+            </span>
+          )}
+        </div>
+      </div>
+
+      {/* Message Card */}
+      <div className="rounded-md bg-[#2a2a47]/80 pl-4 pr-4 pb-4 pt-4 shadow-blue border-0">
+        <div className="flex items-center gap-3">
+          {message.vipLevel && <VIPBadge level={message.vipLevel} />}
+          <span className="text-white font-semibold text-base">
+            {message.username}
+          </span>
+          <span className="ml-auto text-white/55 text-[14px]">
+            {message.timestamp}
+          </span>
+        </div>
+        <p className="text-white/70 text-md leading-relaxed mt-3">
+          {message.content}
+        </p>
+      </div>
+    </div>
+  );
+}

@@ -11,22 +11,35 @@ export function Logo({
   showText = false,
   className = "",
 }: LogoProps) {
-  const sizeClasses = {
-    sm: "w-12 h-12",
-    md: "w-14 h-14",
-    lg: "w-16 h-16",
+  const iconSizeClasses = {
+    sm: "w-8 h-8",
+    md: "w-10 h-10",
+    lg: "w-12 h-12",
+  };
+
+  const textSizeClasses = {
+    sm: "text-xl",
+    md: "text-2xl",
+    lg: "text-3xl",
   };
 
   return (
-    <div className={`flex flex-col items-center gap-2 ${className}`}>
-      <div
-        className={`${sizeClasses[size]} bg-gradient-primary rounded-sm p-3 shadow-glow-primary flex items-center justify-center relative`}
-      >
-        <LogoIcon className="w-full h-full text-white" />
+    <div className={`flex items-center gap-2 ${className}`}>
+      {showText && (
+        <span
+          className={`text-text-primary font-bold ${textSizeClasses[size]}`}
+        >
+          Blaze
+        </span>
+      )}
+      <div className={iconSizeClasses[size]}>
+        <LogoIcon className="w-full h-full" />
       </div>
       {showText && (
-        <span className="text-text-primary font-bold text-xl">
-          Blaze Casino
+        <span
+          className={`text-text-primary font-bold ${textSizeClasses[size]}`}
+        >
+          Casino
         </span>
       )}
     </div>
