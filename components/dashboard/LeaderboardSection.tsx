@@ -1,18 +1,41 @@
 "use client";
 
 import Image from "next/image";
-import type { LeaderboardPlayer } from "@/types/dashboard.types";
+import { useLeaderboard } from "@/hooks/api/useLeaderboard";
 import { LeaderboardRow } from "./LeaderboardRow";
+import { LeaderboardSkeleton } from "./LeaderboardSkeleton";
+import { LeaderboardError } from "./LeaderboardError";
+import type { LeaderboardPlayer } from "@/types/dashboard.types";
 
 interface LeaderboardSectionProps {
-  players: LeaderboardPlayer[];
-  currentUserId?: string;
+  maxPlayers?: number;
 }
 
 export function LeaderboardSection({
-  players,
-  currentUserId,
+  maxPlayers = 100,
 }: LeaderboardSectionProps) {
+  const { players, currentUser, isLoading, isError, error, refetch } =
+    useLeaderboard({ period: "all" });
+
+  // Limit displayed players based on maxPlayers prop
+  const displayedPlayers = players.slice(0, maxPlayers);
+
+  // Check if current user is in the visible list
+  const currentUserInList = currentUser
+    ? displayedPlayers.some((p) => p.username === currentUser.username)
+    : false;
+
+  // Map API response to LeaderboardPlayer type
+  const mapToLeaderboardPlayer = (
+    player: (typeof players)[0]
+  ): LeaderboardPlayer => ({
+    username: player.username,
+    gamesPlayed: player.gamesPlayed,
+    totalWagered: player.totalWagered,
+    winRate: player.winRate,
+    rank: player.rank,
+  });
+
   return (
     <section className="p-4 bg-(--accent-purple-light) rounded-md">
       {/* Header */}
@@ -30,16 +53,42 @@ export function LeaderboardSection({
         </div>
       </div>
 
+      {/* Loading State */}
+      {isLoading && <LeaderboardSkeleton count={maxPlayers} />}
+
+      {/* Error State */}
+      {isError && <LeaderboardError error={error} onRetry={refetch} />}
+
+      {/* Empty State */}
+      {!isLoading && !isError && players.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <p className="text-gray-400">No players found for this period.</p>
+        </div>
+      )}
+
       {/* Player list */}
-      <div className="space-y-2">
-        {players.map((player) => (
-          <LeaderboardRow
-            key={player.id}
-            player={player}
-            isCurrentUser={player.id === currentUserId}
-          />
-        ))}
-      </div>
+      {!isLoading && !isError && players.length > 0 && (
+        <div className="space-y-2">
+          {displayedPlayers.map((player) => (
+            <LeaderboardRow
+              key={`${player.rank}-${player.username}`}
+              player={mapToLeaderboardPlayer(player)}
+              isCurrentUser={currentUser?.username === player.username}
+            />
+          ))}
+
+          {/* Show current user separately if not in visible list */}
+          {currentUser && !currentUserInList && (
+            <>
+              <div className="border-t border-gray-600 my-4" />
+              <LeaderboardRow
+                player={mapToLeaderboardPlayer(currentUser)}
+                isCurrentUser
+              />
+            </>
+          )}
+        </div>
+      )}
     </section>
   );
 }

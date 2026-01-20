@@ -9,6 +9,16 @@ interface LeaderboardRowProps {
   isCurrentUser?: boolean;
 }
 
+function formatWagered(amount: number): string {
+  if (amount >= 1_000_000) {
+    return `$${(amount / 1_000_000).toFixed(1)}M`;
+  }
+  if (amount >= 1_000) {
+    return `$${(amount / 1_000).toFixed(1)}K`;
+  }
+  return `$${amount.toLocaleString()}`;
+}
+
 export function LeaderboardRow({
   player,
   isCurrentUser = false,
@@ -53,17 +63,17 @@ export function LeaderboardRow({
 
       {/* Stats */}
       <div className="flex flex-col items-end gap-1">
-        {/* Coins */}
+        {/* Total Wagered */}
         <div className="flex items-center gap-1">
           <CoinIcon className="w-4 h-4" />
           <span className="text-white font-bold text-sm">
-            ${player.coins.toLocaleString()}
+            {formatWagered(player.totalWagered)}
           </span>
         </div>
 
         {/* Win rate */}
         <span className="text-green-500 text-xs font-medium">
-          {player.winRate}% win
+          {player.winRate.toFixed(2)}% win
         </span>
       </div>
     </div>
