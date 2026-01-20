@@ -16,12 +16,12 @@ interface UseLeaderboardOptions {
 export const useLeaderboard = ({
   period = "all",
 }: UseLeaderboardOptions = {}) => {
-  const { isAuthenticated, isHydrated, logout } = useAuthStore();
+  const { isHydrated, logout } = useAuthStore();
 
   const query = useQuery<LeaderboardResponse>({
     queryKey: QUERY_KEYS.LEADERBOARD.list(period),
     queryFn: () => leaderboardApi.getLeaderboard(period),
-    enabled: isAuthenticated && isHydrated,
+    enabled: isHydrated,
     staleTime: 2 * 60 * 1000, // 2 minutes
     retry: false,
   });
@@ -34,7 +34,7 @@ export const useLeaderboard = ({
   }, [query.error, logout]);
 
   // Show loading state if auth hasn't been hydrated yet or if query is loading
-  const isLoading = !isHydrated || query.isLoading;
+  const isLoading = !isHydrated || query.isLoading || query.isFetching;
 
   return {
     players: query.data?.players ?? [],
