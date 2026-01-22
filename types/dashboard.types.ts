@@ -8,11 +8,10 @@ export interface Game {
 }
 
 export interface LeaderboardPlayer {
-  id: string;
   username: string;
   avatar?: string;
   gamesPlayed: number;
-  coins: number;
+  totalWagered: number;
   winRate: number;
   rank: number;
 }

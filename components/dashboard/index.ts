@@ -9,6 +9,8 @@ export { GameGrid } from "./GameGrid";
 export { GamesSection } from "./GamesSection";
 export { LeaderboardRow } from "./LeaderboardRow";
 export { LeaderboardSection } from "./LeaderboardSection";
+export { LeaderboardSkeleton } from "./LeaderboardSkeleton";
+export { LeaderboardError } from "./LeaderboardError";
 export { ChatFAB } from "./ChatFAB";
 export { ChatModal } from "./ChatModal";
 export { ChatSidebar } from "./ChatSidebar";
