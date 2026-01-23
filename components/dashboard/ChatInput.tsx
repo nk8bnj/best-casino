@@ -5,14 +5,15 @@ import Image from "next/image";
 
 interface ChatInputProps {
   onSend?: (message: string) => void;
+  disabled?: boolean;
 }
 
-export function ChatInput({ onSend }: ChatInputProps) {
+export function ChatInput({ onSend, disabled }: ChatInputProps) {
   const [message, setMessage] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (message.trim() && onSend) {
+    if (message.trim() && onSend && !disabled) {
       onSend(message.trim());
       setMessage("");
     }
@@ -28,14 +29,16 @@ export function ChatInput({ onSend }: ChatInputProps) {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Write a message..."
-          className="w-full flex-1 bg-transparent text-white placeholder-white/50 text-sm focus:outline-none"
+          placeholder={disabled ? "Connecting..." : "Write a message..."}
+          disabled={disabled}
+          className="w-full flex-1 bg-transparent text-white placeholder-white/50 text-sm focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         />
       </div>
       <button
         type="submit"
-        disabled={!message.trim()}
+        disabled={!message.trim() || disabled}
         aria-label="Send message"
+        className="disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <Image
           src="/assets/send-message.svg"

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
+import { devtools, persist, createJSONStorage } from "zustand/middleware";
 import type { User } from "@/types/auth.types";
 import { tokenStorageService } from "@/lib/utils/token";
 
@@ -12,46 +12,50 @@ interface AuthState {
   // Actions
   setUser: (user: User | null) => void;
   logout: () => void;
-  hydrateAuth: () => void;
+  setHydrated: (hydrated: boolean) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   devtools(
-    (set) => ({
-      // Initial state
-      user: null,
-      isAuthenticated: false,
-      isHydrated: false,
+    persist(
+      (set) => ({
+        // Initial state
+        user: null,
+        isAuthenticated: false,
+        isHydrated: false,
 
-      // Set user and update auth status
-      setUser: (user) =>
-        set({
-          user,
-          isAuthenticated: !!user,
-          isHydrated: true,
+        // Set user and update auth status
+        setUser: (user) =>
+          set({
+            user,
+            isAuthenticated: !!user,
+            isHydrated: true,
+          }),
+
+        // Logout: clear user and token
+        logout: () => {
+          tokenStorageService.remove();
+          set({
+            user: null,
+            isAuthenticated: false,
+          });
+        },
+
+        // Set hydrated flag
+        setHydrated: (hydrated) => set({ isHydrated: hydrated }),
+      }),
+      {
+        name: "auth-storage",
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          user: state.user,
+          isAuthenticated: state.isAuthenticated,
         }),
-
-      // Logout: clear user and token
-      logout: () => {
-        tokenStorageService.remove();
-        set({
-          user: null,
-          isAuthenticated: false,
-        });
-      },
-
-      // Hydrate auth state on app load
-      hydrateAuth: () => {
-        const token = tokenStorageService.get();
-        if (token) {
-          // Token exists, but we need to fetch user data
-          // This will be handled by useCurrentUser hook
-          set({ isAuthenticated: true, isHydrated: true });
-        } else {
-          set({ isHydrated: true });
-        }
-      },
-    }),
+        onRehydrateStorage: () => (state) => {
+          state?.setHydrated(true);
+        },
+      }
+    ),
     { name: "AuthStore" }
   )
 );
