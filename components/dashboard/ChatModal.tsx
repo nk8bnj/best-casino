@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useUIStore } from "@/store/ui.store";
 import { CloseIcon } from "@/components/icons";
@@ -31,6 +31,12 @@ export function ChatModal({
   onSendMessage,
 }: ChatModalProps) {
   const { isChatOpen, closeChat } = useUIStore();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Close on ESC key
   useEffect(() => {
@@ -118,6 +124,7 @@ export function ChatModal({
           {messages.map((message, index) => (
             <ChatMessage key={message.id || `msg-${index}`} message={message} />
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}

@@ -103,7 +103,7 @@ function DashboardContent() {
           </section>
 
           {/* Right Column: Chat */}
-          <aside className="rounded-[28px] h-[calc(100vh-120px)]">
+          <aside className="rounded-[28px] h-[calc(100vh-290px)]">
             <ChatSidebar
               messages={messages}
               stats={mockChatStats}

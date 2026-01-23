@@ -46,8 +46,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Message Card */}
       <div className="rounded-md bg-[#2a2a47]/80 pl-4 pr-4 pb-4 pt-4 shadow-blue border-0">
-        <div className="flex items-center gap-3">
-          {message.vipLevel && <VIPBadge level={message.vipLevel} />}
+        <div className="flex items-center gap-3 border-b border-white/50 pb-2">
+          <VIPBadge level={message.vipLevel ?? 1} />
           <span className="text-white font-semibold text-base">
             {message.username || "Anonymous"}
           </span>

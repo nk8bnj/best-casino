@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { ChatStatsBar } from "./ChatStatsBar";
 import { ChatMessage } from "./ChatMessage";
@@ -27,6 +28,13 @@ export function ChatSidebar({
   connectionError,
   onSendMessage,
 }: ChatSidebarProps) {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <div className="relative h-full flex flex-col rounded-[28px]">
       {/* Header */}
@@ -57,7 +65,7 @@ export function ChatSidebar({
       <ChatStatsBar stats={stats} />
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto pr-1 pt-4 scrollbar-hide space-y-2">
+      <div className="flex-1 overflow-y-auto pl-8 pr-1 pt-4 scrollbar-hide space-y-2">
         {messages.length === 0 && isConnected && (
           <div className="text-center text-white/50 text-sm py-8">
             No messages yet. Be the first to say hello!
@@ -66,6 +74,7 @@ export function ChatSidebar({
         {messages.map((message, index) => (
           <ChatMessage key={message.id || `msg-${index}`} message={message} />
         ))}
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input */}
