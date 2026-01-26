@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { socketService } from "@/lib/socket";
+import { chatSocketService } from "@/lib/socket/chat";
 import { useChatStore } from "@/store/chat.store";
 import { useAuthStore } from "@/store/auth.store";
 import { tokenStorageService } from "@/lib/utils/token";
@@ -24,10 +24,10 @@ export function useChatSocket() {
     }
 
     setCurrentUserId(user.id);
-    socketService.connect(token);
+    chatSocketService.connect(token);
 
     return () => {
-      socketService.disconnect();
+      chatSocketService.disconnect();
     };
   }, [user, setCurrentUserId, isHydrated]);
 }

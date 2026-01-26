@@ -1,22 +1,22 @@
 "use client";
 
 import { useCallback } from "react";
-import { socketService } from "@/lib/socket";
+import { chatSocketService } from "@/lib/socket/chat";
 
 /**
  * Hook providing chat action wrappers.
  */
 export function useChatActions() {
   const sendMessage = useCallback((text: string) => {
-    socketService.sendMessage(text);
+    chatSocketService.sendMessage(text);
   }, []);
 
   const joinRoom = useCallback((roomId: string) => {
-    socketService.joinRoom(roomId);
+    chatSocketService.joinRoom(roomId);
   }, []);
 
   const leaveRoom = useCallback((roomId: string) => {
-    socketService.leaveRoom(roomId);
+    chatSocketService.leaveRoom(roomId);
   }, []);
 
   return {

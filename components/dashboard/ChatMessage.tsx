@@ -11,9 +11,10 @@ interface ChatMessageProps {
 
 export function ChatMessage({ message }: ChatMessageProps) {
   const messageType = (message as ChatMessageWithType).type;
+  const isSystemMessage = messageType === "join" || messageType === "leave";
 
   // System message styling for join/leave events
-  if (messageType === "join" || messageType === "leave") {
+  if (isSystemMessage) {
     return (
       <div className="flex justify-center py-2">
         <div className="px-4 py-2 rounded-full bg-white/5 text-white/50 text-xs">

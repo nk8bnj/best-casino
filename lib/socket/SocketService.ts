@@ -1,17 +1,24 @@
 import { io, type Socket } from "socket.io-client";
-import { SOCKET_CONFIG } from "./config";
-import {
-  SocketEvents,
-  type ServerMessage,
-  type ChatMessageWithType,
-  type ChatHistoryResponse,
-} from "@/types/chat.types";
-import { useChatStore } from "@/store/chat.store";
-import { useAuthStore } from "@/store/auth.store";
 
+export interface SocketConfig {
+  url: string;
+  reconnection?: boolean;
+  reconnectionAttempts?: number;
+  reconnectionDelay?: number;
+  reconnectionDelayMax?: number;
+}
+
+export type EventCallback<T = unknown> = (data: T) => void;
+
+/**
+ * Generic WebSocket service - knows nothing about specific domains (chat, games, etc.)
+ * Provides a simple pub/sub interface for event handling.
+ */
 class SocketService {
   private static instance: SocketService;
   private socket: Socket | null = null;
+  private eventHandlers = new Map<string, Set<EventCallback>>();
+  private config: SocketConfig | null = null;
 
   private constructor() {}
 
@@ -23,23 +30,21 @@ class SocketService {
   }
 
   /**
-   * Transform server message format to client format
+   * Configure the socket service (call before connect)
    */
-  private transformMessage(serverMsg: ServerMessage): ChatMessageWithType {
-    return {
-      id: serverMsg._id || `${serverMsg.userId}-${Date.now()}-${Math.random()}`,
-      userId: serverMsg.userId,
-      username: serverMsg.username,
-      content: serverMsg.text,
-      timestamp: serverMsg.time,
-      type: serverMsg.type || "chat",
-    };
+  configure(config: SocketConfig): void {
+    this.config = config;
   }
 
   /**
    * Connect to the socket server
    */
   connect(token: string): void {
+    if (!this.config) {
+      console.error("[SocketService] Not configured. Call configure() first.");
+      return;
+    }
+
     if (this.socket?.connected) {
       console.warn("[SocketService] Already connected");
       return;
@@ -50,18 +55,18 @@ class SocketService {
       this.socket = null;
     }
 
-    useChatStore.getState().setConnecting(true);
+    this.emit("connecting", undefined);
 
-    this.socket = io(SOCKET_CONFIG.URL, {
+    this.socket = io(this.config.url, {
       auth: { token },
       transports: ["polling", "websocket"],
-      reconnection: SOCKET_CONFIG.RECONNECTION,
-      reconnectionAttempts: SOCKET_CONFIG.RECONNECTION_ATTEMPTS,
-      reconnectionDelay: SOCKET_CONFIG.RECONNECTION_DELAY,
-      reconnectionDelayMax: SOCKET_CONFIG.RECONNECTION_DELAY_MAX,
+      reconnection: this.config.reconnection ?? true,
+      reconnectionAttempts: this.config.reconnectionAttempts ?? 5,
+      reconnectionDelay: this.config.reconnectionDelay ?? 1000,
+      reconnectionDelayMax: this.config.reconnectionDelayMax ?? 5000,
     });
 
-    this.setupEventListeners();
+    this.setupCoreListeners();
   }
 
   /**
@@ -69,163 +74,83 @@ class SocketService {
    */
   disconnect(): void {
     if (this.socket) {
-      const activeRoom = useChatStore.getState().activeRoom;
-      if (activeRoom) {
-        this.leaveRoom(activeRoom);
-      }
-
       this.socket.removeAllListeners();
       this.socket.disconnect();
       this.socket = null;
     }
-    useChatStore.getState().reset();
+    this.emit("disconnected", undefined);
   }
 
   /**
-   * Set up socket event listeners
+   * Setup core socket.io event listeners
    */
-  private setupEventListeners(): void {
+  private setupCoreListeners(): void {
     if (!this.socket) return;
 
-    this.socket.on("connect", this.handleConnect);
-    this.socket.on("disconnect", this.handleDisconnect);
-    this.socket.on("connect_error", this.handleConnectError);
-    this.socket.on(SocketEvents.CHAT_HISTORY, this.handleChatHistory);
-    this.socket.on(SocketEvents.MESSAGE, this.handleMessage);
-    this.socket.on(SocketEvents.CHAT_ERROR, this.handleChatError);
+    this.socket.on("connect", () => {
+      this.emit("connected", undefined);
+    });
+
+    this.socket.on("disconnect", (reason: string) => {
+      this.emit("disconnected", { reason });
+    });
+
+    this.socket.on("connect_error", (error: Error) => {
+      this.emit("error", { message: error.message });
+    });
   }
 
   /**
-   * Handle successful connection
+   * Subscribe to a socket event from the server
    */
-  private handleConnect = (): void => {
-    const store = useChatStore.getState();
-    store.setConnected(true);
-    store.setConnecting(false);
-    store.setConnectionError(null);
-
-    // Auto-join default room
-    const activeRoom = store.activeRoom;
-    if (activeRoom) {
-      this.joinRoom(activeRoom);
-    } else {
-      this.joinRoom(SOCKET_CONFIG.DEFAULT_ROOM);
-    }
-  };
-
-  /**
-   * Handle disconnection
-   */
-  private handleDisconnect = (reason: string): void => {
-    const store = useChatStore.getState();
-    store.setConnected(false);
-    if (reason === "io server disconnect") {
-      store.setConnectionError("Disconnected by server");
-    }
-  };
-
-  /**
-   * Handle connection error
-   */
-  private handleConnectError = (error: Error): void => {
-    console.error("[SocketService] Connection error:", error.message);
-    const store = useChatStore.getState();
-    store.setConnecting(false);
-    store.setConnectionError(error.message || "Connection failed");
-  };
-
-  /**
-   * Handle chat history from server
-   */
-  private handleChatHistory = (data: ChatHistoryResponse): void => {
-    const transformedMessages = data.messages.map((msg) =>
-      this.transformMessage(msg)
-    );
-    useChatStore.getState().setMessages(transformedMessages);
-  };
-
-  /**
-   * Handle incoming message
-   */
-  private handleMessage = (serverMsg: ServerMessage): void => {
-    const { currentUserId, addMessage } = useChatStore.getState();
-
-    // Skip own join/leave messages
-    if (serverMsg.type === "join" || serverMsg.type === "leave") {
-      if (serverMsg.userId === currentUserId) {
-        return;
-      }
+  onServer<T = unknown>(event: string, callback: EventCallback<T>): () => void {
+    if (!this.socket) {
+      console.warn(
+        `[SocketService] Cannot subscribe to "${event}": not connected`
+      );
+      return () => {};
     }
 
-    const message = this.transformMessage(serverMsg);
-    addMessage(message);
-  };
+    this.socket.on(event, callback as EventCallback);
 
-  /**
-   * Handle chat error
-   */
-  private handleChatError = (error: { message: string }): void => {
-    console.error("[SocketService] Chat error:", error.message);
-    useChatStore.getState().setConnectionError(error.message);
-  };
-
-  /**
-   * Join a chat room
-   */
-  joinRoom(roomId: string): void {
-    if (!this.socket?.connected) {
-      console.warn("[SocketService] Cannot join room: not connected");
-      return;
-    }
-
-    const currentRoom = useChatStore.getState().activeRoom;
-
-    if (currentRoom && currentRoom !== roomId) {
-      this.leaveRoom(currentRoom);
-    }
-
-    useChatStore.getState().clearMessages();
-    useChatStore.getState().setActiveRoom(roomId);
-
-    this.socket.emit(SocketEvents.CHAT_JOIN, { roomId });
-  }
-
-  /**
-   * Leave a chat room
-   */
-  leaveRoom(roomId: string): void {
-    if (!this.socket?.connected) {
-      return;
-    }
-
-    this.socket.emit(SocketEvents.CHAT_LEAVE, { roomId });
-  }
-
-  /**
-   * Send a chat message
-   */
-  sendMessage(message: string): void {
-    if (!this.socket?.connected) {
-      console.warn("[SocketService] Cannot send message: not connected");
-      return;
-    }
-
-    const activeRoom = useChatStore.getState().activeRoom;
-
-    if (!activeRoom) {
-      console.warn("[SocketService] No active room");
-      return;
-    }
-
-    const authState = useAuthStore.getState();
-    const payload = {
-      roomId: activeRoom,
-      message,
-      username: authState.user?.username || "Anonymous",
-      userId: authState.user?.id || "",
+    return () => {
+      this.socket?.off(event, callback as EventCallback);
     };
+  }
 
-    this.socket.emit(SocketEvents.CHAT_MESSAGE, payload);
+  /**
+   * Emit an event to the server
+   */
+  emitToServer<T = unknown>(event: string, data: T): void {
+    if (!this.socket?.connected) {
+      console.warn(`[SocketService] Cannot emit "${event}": not connected`);
+      return;
+    }
+    this.socket.emit(event, data);
+  }
+
+  /**
+   * Subscribe to internal events (connected, disconnected, error, connecting)
+   */
+  on<T = unknown>(event: string, callback: EventCallback<T>): () => void {
+    if (!this.eventHandlers.has(event)) {
+      this.eventHandlers.set(event, new Set());
+    }
+    this.eventHandlers.get(event)!.add(callback as EventCallback);
+
+    return () => {
+      this.eventHandlers.get(event)?.delete(callback as EventCallback);
+    };
+  }
+
+  /**
+   * Emit an internal event (for use by the socket service itself)
+   */
+  private emit<T = unknown>(event: string, data: T): void {
+    const handlers = this.eventHandlers.get(event);
+    if (handlers) {
+      handlers.forEach((handler) => handler(data));
+    }
   }
 
   /**
@@ -233,6 +158,13 @@ class SocketService {
    */
   isConnected(): boolean {
     return this.socket?.connected ?? false;
+  }
+
+  /**
+   * Get socket ID (useful for debugging)
+   */
+  getSocketId(): string | undefined {
+    return this.socket?.id;
   }
 }
 
