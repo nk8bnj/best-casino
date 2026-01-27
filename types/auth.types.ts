@@ -10,17 +10,17 @@ export interface RegisterRequest {
   password: string;
 }
 
-// Response types (based on backend structure)
+// Response types (based on actual backend structure)
 export interface AuthResponse {
   accessToken: string;
-  user: User;
+  refreshToken: string;
+  userId: string;
+  userName: string;
 }
 
 export interface User {
   id: string;
   username: string;
-  email: string;
-  createdAt?: string;
 }
 
 export interface CurrentUserResponse {

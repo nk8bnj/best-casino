@@ -17,16 +17,20 @@ export const useRegister = () => {
     mutationFn: authApi.register,
 
     onSuccess: (data) => {
+      // Construct user object from flat response
+      const user = {
+        id: data.userId,
+        username: data.userName,
+      };
+
       // 1. Store token
       tokenStorageService.set(data.accessToken);
 
       // 2. Update auth store
-      setUser(data.user);
+      setUser(user);
 
       // 3. Prefetch or set current user query data
-      queryClient.setQueryData(QUERY_KEYS.AUTH.CURRENT_USER, {
-        user: data.user,
-      });
+      queryClient.setQueryData(QUERY_KEYS.AUTH.CURRENT_USER, { user });
 
       // 4. Navigate to dashboard
       router.push(ROUTES.DASHBOARD);

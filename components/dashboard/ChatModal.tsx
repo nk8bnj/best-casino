@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import Image from "next/image";
 import { useUIStore } from "@/store/ui.store";
 import { CloseIcon } from "@/components/icons";
@@ -11,14 +11,32 @@ import type {
   ChatMessage as ChatMessageType,
   ChatStats,
 } from "@/types/dashboard.types";
+import type { ChatMessageWithType } from "@/types/chat.types";
 
 interface ChatModalProps {
-  messages: ChatMessageType[];
+  messages: (ChatMessageType | ChatMessageWithType)[];
   stats: ChatStats;
+  isConnected?: boolean;
+  isConnecting?: boolean;
+  connectionError?: string | null;
+  onSendMessage?: (message: string) => void;
 }
 
-export function ChatModal({ messages, stats }: ChatModalProps) {
+export function ChatModal({
+  messages,
+  stats,
+  isConnected,
+  isConnecting,
+  connectionError,
+  onSendMessage,
+}: ChatModalProps) {
   const { isChatOpen, closeChat } = useUIStore();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Close on ESC key
   useEffect(() => {
@@ -81,19 +99,37 @@ export function ChatModal({ messages, stats }: ChatModalProps) {
         </div>
         <div className="mx-auto h-px w-[100%] bg-linear-to-r from-transparent via-white/40 to-transparent" />
 
+        {/* Connection Status */}
+        {(isConnecting || connectionError) && (
+          <div className="px-4 py-2 text-center">
+            {isConnecting && (
+              <span className="text-xs text-yellow-400">Connecting...</span>
+            )}
+            {connectionError && (
+              <span className="text-xs text-red-400">{connectionError}</span>
+            )}
+          </div>
+        )}
+
         {/* Stats */}
         <ChatStatsBar stats={stats} />
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto pl-10 pr-5 pt-4 scrollbar-hide space-y-2">
-          {messages.map((message) => (
-            <ChatMessage key={message.id} message={message} />
+          {messages.length === 0 && isConnected && (
+            <div className="text-center text-white/50 text-sm py-8">
+              No messages yet. Be the first to say hello!
+            </div>
+          )}
+          {messages.map((message, index) => (
+            <ChatMessage key={message.id || `msg-${index}`} message={message} />
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}
         <div className="px-2 pb-4">
-          <ChatInput />
+          <ChatInput onSend={onSendMessage} disabled={!isConnected} />
         </div>
       </div>
 

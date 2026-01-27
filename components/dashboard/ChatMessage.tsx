@@ -2,13 +2,28 @@
 
 import Image from "next/image";
 import type { ChatMessage as ChatMessageType } from "@/types/dashboard.types";
+import type { ChatMessageWithType } from "@/types/chat.types";
 import { VIPBadge } from "./VIPBadge";
 
 interface ChatMessageProps {
-  message: ChatMessageType;
+  message: ChatMessageType | ChatMessageWithType;
 }
 
 export function ChatMessage({ message }: ChatMessageProps) {
+  const messageType = (message as ChatMessageWithType).type;
+  const isSystemMessage = messageType === "join" || messageType === "leave";
+
+  // System message styling for join/leave events
+  if (isSystemMessage) {
+    return (
+      <div className="flex justify-center py-2">
+        <div className="px-4 py-2 rounded-full bg-white/5 text-white/50 text-xs">
+          {message.content}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative pt-3 overflow-visible">
       {/* Avatar - positioned absolute, overlapping top-left */}
@@ -17,14 +32,14 @@ export function ChatMessage({ message }: ChatMessageProps) {
           {message.avatar ? (
             <Image
               src={message.avatar}
-              alt={message.username}
+              alt={message.username || "User"}
               width={56}
               height={56}
               className="w-full h-full object-cover"
             />
           ) : (
             <span className="text-white font-semibold text-base">
-              {message.username.charAt(0).toUpperCase()}
+              {(message.username || "?").charAt(0).toUpperCase()}
             </span>
           )}
         </div>
@@ -32,10 +47,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
       {/* Message Card */}
       <div className="rounded-md bg-[#2a2a47]/80 pl-4 pr-4 pb-4 pt-4 shadow-blue border-0">
-        <div className="flex items-center gap-3">
-          {message.vipLevel && <VIPBadge level={message.vipLevel} />}
+        <div className="flex items-center gap-3 border-b border-white/50 pb-2">
+          <VIPBadge level={message.vipLevel ?? 1} />
           <span className="text-white font-semibold text-base">
-            {message.username}
+            {message.username || "Anonymous"}
           </span>
           <span className="ml-auto text-white/55 text-[14px]">
             {message.timestamp}

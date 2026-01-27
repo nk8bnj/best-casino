@@ -9,7 +9,9 @@ import {
   ChatModal,
   ChatSidebar,
 } from "@/components/dashboard";
-import type { Game, ChatMessage, ChatStats } from "@/types/dashboard.types";
+import { ChatProvider } from "@/components/providers/ChatProvider";
+import { useChatMessages, useChatActions } from "@/hooks/chat";
+import type { Game, ChatStats } from "@/types/dashboard.types";
 
 // Mock data for games
 const mockGames: Game[] = [
@@ -47,53 +49,18 @@ const mockGames: Game[] = [
   },
 ];
 
-// Mock data for chat
-const mockMessages: ChatMessage[] = [
-  {
-    id: "1",
-    userId: "u1",
-    username: "Mia Storm",
-    content:
-      'Hello! Is the live roulette available right now? It says "connecting"',
-    timestamp: "15:35",
-    vipLevel: 1,
-  },
-  {
-    id: "2",
-    userId: "u2",
-    username: "Mia Storm",
-    content:
-      'Hello! Is the live roulette available right now? It says "connecting"',
-    timestamp: "15:35",
-    vipLevel: 3,
-  },
-  {
-    id: "3",
-    userId: "u3",
-    username: "Mia Storm",
-    content:
-      'Hello! Is the live roulette available right now? It says "connecting"',
-    timestamp: "15:35",
-    vipLevel: 2,
-  },
-  {
-    id: "4",
-    userId: "u4",
-    username: "Mia Storm",
-    content:
-      'Hello! Is the live roulette available right now? It says "connecting"',
-    timestamp: "15:35",
-    vipLevel: 5,
-  },
-];
-
+// Mock data for chat stats (could be dynamic in future)
 const mockChatStats: ChatStats = {
   online: 250,
   friends: 48,
   playing: 54,
 };
 
-export default function DashboardPage() {
+function DashboardContent() {
+  const { messages, isConnected, isConnecting, connectionError } =
+    useChatMessages();
+  const { sendMessage } = useChatActions();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -136,8 +103,15 @@ export default function DashboardPage() {
           </section>
 
           {/* Right Column: Chat */}
-          <aside className="rounded-[28px] h-[calc(100vh-120px)]">
-            <ChatSidebar messages={mockMessages} stats={mockChatStats} />
+          <aside className="rounded-[28px] h-[calc(100vh-290px)]">
+            <ChatSidebar
+              messages={messages}
+              stats={mockChatStats}
+              isConnected={isConnected}
+              isConnecting={isConnecting}
+              connectionError={connectionError}
+              onSendMessage={sendMessage}
+            />
           </aside>
         </div>
       </main>
@@ -149,8 +123,23 @@ export default function DashboardPage() {
 
       {/* Chat Modal - mobile and tablet */}
       <div className="xl:hidden">
-        <ChatModal messages={mockMessages} stats={mockChatStats} />
+        <ChatModal
+          messages={messages}
+          stats={mockChatStats}
+          isConnected={isConnected}
+          isConnecting={isConnecting}
+          connectionError={connectionError}
+          onSendMessage={sendMessage}
+        />
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <ChatProvider>
+      <DashboardContent />
+    </ChatProvider>
   );
 }
