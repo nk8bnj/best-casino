@@ -30,36 +30,6 @@ export default function CrashGamePage() {
 
   return (
     <main className="min-h-screen pb-20">
-      {/* Header */}
-      <header className="sticky-header">
-        <div className="flex items-center justify-between px-4 xl:px-8 h-16">
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="flex items-center gap-2 text-text-secondary hover:text-white transition-colors"
-          >
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M15 18l-6-6 6-6"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <span>Back to Dashboard</span>
-          </button>
-          <h1 className="text-2xl font-bold text-white">Crash Game</h1>
-          <div className="w-32" /> {/* Spacer for centering */}
-        </div>
-      </header>
-
-      {/* Game */}
       <CrashGame />
     </main>
   );

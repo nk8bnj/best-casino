@@ -88,23 +88,26 @@ export const useCrashGameCanvas = () => {
         rocketTiltRef.current = 0;
         crashedRef.current = false;
         explosionManager.clearExplosion();
+        // Don't draw the rocket on the waiting/start screen.
+        // Show only the default multiplier and the waiting text.
+        const displayMultiplier = 1.0;
 
-        drawRocket(
-          ctx,
-          rocketX,
-          rocketY,
-          -Math.PI / 4,
-          timeRef.current,
-          rocketScaleRef.current
+        ctx.fillStyle = "rgba(255, 255, 255, 0.95)";
+        ctx.font = "bold 96px Arial";
+        ctx.textAlign = "center";
+        ctx.shadowColor = "transparent";
+        ctx.fillText(
+          `${displayMultiplier.toFixed(2)}x`,
+          canvas.width / 2,
+          canvas.height / 2 - 10
         );
 
         ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
-        ctx.font = "bold 32px Arial";
-        ctx.textAlign = "center";
+        ctx.font = "bold 28px Arial";
         ctx.fillText(
           "Waiting for bets...",
           canvas.width / 2,
-          canvas.height - 100
+          canvas.height / 2 + 50
         );
         return;
       }

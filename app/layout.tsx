@@ -1,6 +1,7 @@
 import "./globals.css";
 import { getFontVariables } from "@/config/fonts";
 import { QueryProvider } from "@/providers/QueryProvider";
+import { Header } from "@/components/layout/Header";
 
 export { metadata } from "@/config/metadata";
 
@@ -12,7 +13,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${getFontVariables()} antialiased`}>
-        <QueryProvider>{children}</QueryProvider>
+        <QueryProvider>
+          <Header />
+          {children}
+        </QueryProvider>
       </body>
     </html>
   );

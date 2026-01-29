@@ -9,19 +9,28 @@ import {
 import { useUIStore } from "@/store/ui.store";
 import { BalanceDisplay } from "./BalanceDisplay";
 import { UserAvatar } from "./UserAvatar";
+import { useAuthStore } from "@/store/auth.store";
+import { useCurrentUser } from "@/hooks/api/useCurrentUser";
 
 interface DashboardHeaderProps {
-  balance?: string;
+  balance?: string; // optional override
   avatarSrc?: string;
   onLogout?: () => void;
 }
 
 export function DashboardHeader({
-  balance = "10.000",
+  balance,
   avatarSrc,
   onLogout,
 }: DashboardHeaderProps) {
+  // Ensure current user is fetched and synced to auth store
+  useCurrentUser();
   const openDrawer = useUIStore((state) => state.openDrawer);
+  const user = useAuthStore((s) => s.user);
+  // Normalize user balance into a separate variable so TypeScript can narrow null/undefined safely
+  const userBalance = user?.balance ?? null;
+  const displayBalance =
+    balance ?? (userBalance !== null ? userBalance.toLocaleString() : "0.00");
 
   return (
     <header className="h-25 sticky-header px-4 md:px-6 xl:px-8 flex items-center justify-between">
@@ -44,13 +53,13 @@ export function DashboardHeader({
 
       {/* Balance - centered on mobile, part of right controls on tablet+ */}
       <div className="md:hidden absolute left-1/2 -translate-x-1/2">
-        <BalanceDisplay balance={balance} />
+        <BalanceDisplay balance={displayBalance} />
       </div>
 
       {/* Right side controls */}
       <div className="flex items-center gap-2 md:gap-3 xl:gap-4">
         <div className="hidden md:block">
-          <BalanceDisplay balance={balance} />
+          <BalanceDisplay balance={displayBalance} />
         </div>
 
         <button className="touch-target flex items-center justify-center">

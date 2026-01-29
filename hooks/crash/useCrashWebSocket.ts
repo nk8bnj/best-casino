@@ -36,7 +36,7 @@ export function useCrashWebSocket() {
     if (!token) {
       console.warn("[CrashWebSocket] No access token");
       // Avoid calling setState synchronously within an effect to prevent cascading renders
-       
+
       setTimeout(
         () => setError("No access token found. Please log in again."),
         0
@@ -115,15 +115,13 @@ export function useCrashWebSocket() {
             myBet: undefined,
           } as CrashCurrentGameResponse);
 
-          // Invalidate queries
+          // Invalidate relevant queries so history and game state refresh
           queryClient.invalidateQueries({
             queryKey: QUERY_KEYS.AUTH.CURRENT_USER,
           });
+          // Invalidate all crash-related queries (matches any params)
           queryClient.invalidateQueries({
-            queryKey: CRASH_QUERY_KEYS.gameHistory(),
-          });
-          queryClient.invalidateQueries({
-            queryKey: CRASH_QUERY_KEYS.betHistory(),
+            queryKey: CRASH_QUERY_KEYS.base,
           });
 
           // Subscribe to next game after delay
