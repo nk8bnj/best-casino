@@ -10,7 +10,8 @@ export function createCometsManager(width: number, _height: number) {
     isRunning: boolean
   ) => {
     // Only spawn comets when game is running
-    if (isRunning && Math.random() < 0.02) {
+    // Spawn probability halved to make comets 50% less frequent
+    if (isRunning && Math.random() < 0.01) {
       comets.push({
         x: width + 100,
         y: -100 + Math.random() * 200,
