@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { authApi } from "@/lib/api/auth.api";
 import { useAuthStore } from "@/store/auth.store";
 import { QUERY_KEYS } from "@/lib/api/endpoints";
+import { tokenStorageService } from "@/lib/utils/token";
 import type { CurrentUserResponse } from "@/types/auth.types";
 
 export const useCurrentUser = () => {
@@ -11,7 +12,7 @@ export const useCurrentUser = () => {
   const query = useQuery<CurrentUserResponse>({
     queryKey: QUERY_KEYS.AUTH.CURRENT_USER,
     queryFn: authApi.getCurrentUser,
-    enabled: isAuthenticated, // Only fetch if authenticated
+    enabled: isAuthenticated && !!tokenStorageService.get(), // Only fetch if authenticated and has token
     staleTime: 5 * 60 * 1000, // 5 minutes
     retry: false, // Don't retry if 401
   });
@@ -19,7 +20,12 @@ export const useCurrentUser = () => {
   // Handle success and error in useEffect
   useEffect(() => {
     if (query.data) {
-      setUser(query.data.user);
+      // Map BackendUser to User
+      setUser({
+        id: query.data.userId,
+        username: query.data.username,
+        balance: query.data.balance,
+      });
     }
   }, [query.data, setUser]);
 
