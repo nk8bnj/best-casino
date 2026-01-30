@@ -1,18 +1,29 @@
 "use client";
 
+import Link from "next/link";
 import { useCrashWebSocket } from "@/hooks/crash";
 import { CrashGameBoard } from "./game";
 import { PanelConfig } from "./bet";
 import { CrashHistory } from "./history";
+import { ROUTES } from "@/config/routes";
 
 export const CrashGame = () => {
   const { isConnected, error } = useCrashWebSocket();
 
   return (
     <section className="w-full h-full">
+      <div className="px-4 xl:px-8 pt-4">
+        <Link
+          href={ROUTES.DASHBOARD}
+          className="inline-flex items-center gap-2 text-accent-yellow hover:text-accent-yellow/90 transition-colors font-medium"
+        >
+          <span aria-hidden>←</span>
+          All games
+        </Link>
+      </div>
       <div className="flex flex-col xl:flex-row gap-6 mt-10 px-4 xl:px-8">
-        {/* Game Board */}
-        <div className="w-full xl:w-[66%] h-[400px] xl:h-[511px] rounded-2xl bg-background-card overflow-hidden flex justify-center items-center">
+        {/* Game Board — fixed aspect ratio so it doesn't stretch on narrow viewports */}
+        <div className="w-full xl:w-[66%] aspect-5/3 rounded-2xl bg-background-card overflow-hidden flex justify-center items-center">
           {error ? (
             <div className="flex flex-col text-center p-8">
               <p className="text-2xl font-bold text-error mb-2">
@@ -28,7 +39,6 @@ export const CrashGame = () => {
             </div>
           ) : !isConnected ? (
             <div className="flex flex-col text-center">
-              <p className="text-6xl font-bold text-text-secondary">1.00×</p>
               <p className="text-2xl text-text-secondary mt-2">
                 Connecting to game...
               </p>
