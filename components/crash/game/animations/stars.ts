@@ -1,4 +1,7 @@
-export function createStarsManager(width: number, height: number) {
+export function createStarsManager(
+  initialWidth: number,
+  initialHeight: number
+) {
   const baseStars: Array<{
     x: number;
     y: number;
@@ -18,8 +21,13 @@ export function createStarsManager(width: number, height: number) {
 
   let scrollX = 0;
   let scrollY = 0;
+  let width = initialWidth;
+  let height = initialHeight;
 
-  const initStars = () => {
+  const initStars = (w?: number, h?: number) => {
+    if (w !== undefined) width = w;
+    if (h !== undefined) height = h;
+
     baseStars.length = 0;
     baseSparkles.length = 0;
 
