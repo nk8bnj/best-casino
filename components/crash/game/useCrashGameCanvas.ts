@@ -59,11 +59,19 @@ export const useCrashGameCanvas = () => {
     const explosionManager = createExplosionManager();
 
     const doResize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+      const w = canvas.offsetWidth;
+      const h = canvas.offsetHeight;
+      if (w <= 0 || h <= 0) return;
+      canvas.width = w;
+      canvas.height = h;
       starsManager.initStars();
     };
     const onResize = () => requestAnimationFrame(doResize);
+
+    const resizeObserver = new ResizeObserver(() => {
+      onResize();
+    });
+    resizeObserver.observe(canvas);
 
     const drawGame = () => {
       const rocketX = canvas.width / 2;
@@ -234,6 +242,7 @@ export const useCrashGameCanvas = () => {
     animate();
 
     return () => {
+      resizeObserver.disconnect();
       window.removeEventListener("resize", onResize);
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
