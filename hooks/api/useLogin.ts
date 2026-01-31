@@ -29,8 +29,8 @@ export const useLogin = () => {
       // 2. Update auth store
       setUser(user);
 
-      // 3. Prefetch or set current user query data
-      queryClient.setQueryData(QUERY_KEYS.AUTH.CURRENT_USER, { user });
+      // 3. Invalidate current user query so it refetches in BackendUser format
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.AUTH.CURRENT_USER });
 
       // 4. Navigate to dashboard - using replace to prevent back navigation to login
       router.replace(ROUTES.DASHBOARD);

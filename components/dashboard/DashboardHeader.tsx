@@ -23,12 +23,12 @@ export function DashboardHeader({
   avatarSrc,
   onLogout,
 }: DashboardHeaderProps) {
-  // Ensure current user is fetched and synced to auth store
-  useCurrentUser();
+  // Fetch current user data (includes balance from API)
+  const { data: currentUserData } = useCurrentUser();
   const openDrawer = useUIStore((state) => state.openDrawer);
   const user = useAuthStore((s) => s.user);
-  // Normalize user balance into a separate variable so TypeScript can narrow null/undefined safely
-  const userBalance = user?.balance ?? null;
+  // Prefer balance from API response, fall back to store, then "0.00"
+  const userBalance = currentUserData?.balance ?? user?.balance ?? null;
   const displayBalance =
     balance ?? (userBalance !== null ? userBalance.toLocaleString() : "0.00");
 

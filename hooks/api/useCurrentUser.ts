@@ -19,7 +19,8 @@ export const useCurrentUser = () => {
 
   // Handle success and error in useEffect
   useEffect(() => {
-    if (query.data) {
+    // Guard: only update if data matches BackendUser shape (has userId)
+    if (query.data && query.data.userId) {
       // Map BackendUser to User
       setUser({
         id: query.data.userId,
