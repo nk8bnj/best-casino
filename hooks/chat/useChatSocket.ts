@@ -11,7 +11,7 @@ import { tokenStorageService } from "@/lib/utils/token";
  * Connects when authenticated AND user data is loaded, disconnects on unmount.
  */
 export function useChatSocket() {
-  const user = useAuthStore((state) => state.user);
+  const userId = useAuthStore((state) => state.user?.id);
   const isHydrated = useAuthStore((state) => state.isHydrated);
   const setCurrentUserId = useChatStore((state) => state.setCurrentUserId);
 
@@ -19,15 +19,15 @@ export function useChatSocket() {
     const token = tokenStorageService.get();
 
     // Wait for both token AND user data to be available
-    if (!token || !user?.id) {
+    if (!token || !userId) {
       return;
     }
 
-    setCurrentUserId(user.id);
+    setCurrentUserId(userId);
     chatSocketService.connect(token);
 
     return () => {
       chatSocketService.disconnect();
     };
-  }, [user, setCurrentUserId, isHydrated]);
+  }, [userId, setCurrentUserId, isHydrated]);
 }

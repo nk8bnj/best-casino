@@ -21,8 +21,20 @@ export interface AuthResponse {
 export interface User {
   id: string;
   username: string;
+  balance?: number;
 }
 
-export interface CurrentUserResponse {
-  user: User;
+// Backend user response format
+export interface BackendUser {
+  userId: string;
+  email: string;
+  username: string;
+  avatarURL: string;
+  balance: number;
+  gamesPlayed: number;
+  totalWagered: number;
+  totalWon: number;
 }
+
+// The /users/current endpoint returns BackendUser directly
+export type CurrentUserResponse = BackendUser;

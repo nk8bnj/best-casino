@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import type { Game } from "@/types/dashboard.types";
 import { GameTag } from "./GameTag";
 
@@ -19,42 +20,49 @@ const getGameBackground = (gameId: string): string => {
 };
 
 export function GameCard({ game }: GameCardProps) {
+  const router = useRouter();
   const backgroundImage = getGameBackground(game.id);
 
+  const handleFreePlay = () => {
+    if (game.slug === "crash") {
+      router.push("/crash-game");
+    }
+  };
   return (
-    <div className="relative w-full shrink-0 rounded-2xl overflow-hidden bg-linear-to-b from-[#2a2555] to-[#1a1a2e] shadow-lg h-full">
+    <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-b from-[#2a2555] to-[#1a1a2e] shadow-lg aspect-[4/5]">
       {/* Tag */}
       {game.tag && (
-        <div className="absolute top-3 left-3 z-10">
+        <div className="absolute top-4 left-4 z-10">
           <GameTag tag={game.tag} />
         </div>
       )}
 
       {/* Background Image */}
-      <div className="aspect-4/5 relative overflow-hidden h-full">
+      <div className="absolute inset-0">
         <Image
           src={backgroundImage}
           alt={game.name}
           fill
           className="object-cover"
-          sizes="160px"
+          sizes="(max-width: 768px) 50vw, (max-width: 1280px) 35vw, 25vw"
         />
+      </div>
 
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-        {/* Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-3">
-          <h3 className="text-white font-bold text-base mb-1 md:text-[32px]">
-            {game.name}
-          </h3>
-          <p className="text-gray-300 text-xs line-clamp-2 mb-3">
-            {game.description}
-          </p>
-          <button className="w-full bg-gradient-primary text-white text-sm font-semibold py-2 px-4 rounded-full hover:shadow-glow-primary transition-all">
-            Free play
-          </button>
-        </div>
+      {/* Content */}
+      <div className="absolute bottom-0 left-0 right-0 py-5 md:px-10 text-center">
+        <h3 className="text-white font-black text-[32px] mb-2">{game.name}</h3>
+        <p className="text-gray-300 text-sm mb-4 line-clamp-2">
+          {game.description}
+        </p>
+        <button
+          onClick={handleFreePlay}
+          className="bg-gradient-primary text-white text-md font-semibold py-3 px-8 lg:px-12 rounded-full hover:shadow-glow-primary transition-all"
+        >
+          Free play
+        </button>
       </div>
     </div>
   );

@@ -64,7 +64,7 @@ function DashboardContent() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <DashboardHeader balance="10.000" />
+      <DashboardHeader />
 
       {/* Side Drawer - mobile only */}
       <SideDrawer />
