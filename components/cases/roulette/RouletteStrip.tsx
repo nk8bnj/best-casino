@@ -103,6 +103,8 @@ export function RouletteStrip({
         <Image
           src={caseImage || "/assets/case.png"}
           alt={caseName}
+          width={368}
+          height={212}
           className="max-w-full max-h-full object-contain"
         />
       </div>

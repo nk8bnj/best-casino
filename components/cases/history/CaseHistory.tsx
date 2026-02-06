@@ -19,7 +19,7 @@ export const CaseHistory = React.memo(() => {
     );
   }
 
-  const history = data?.history || [];
+  const history = [...(data?.openings || [])];
 
   if (history.length === 0) {
     return (
@@ -61,9 +61,8 @@ export const CaseHistory = React.memo(() => {
           </thead>
           <tbody>
             {history.map((entry) => {
-              const profit = entry.item.price - entry.cost;
-              const isProfitable = profit >= 0;
-              const rarityColor = RARITY_COLORS[entry.item.rarity];
+              const isProfitable = entry.profit >= 0;
+              const rarityColor = RARITY_COLORS[entry.itemRarity];
 
               return (
                 <tr
@@ -71,13 +70,14 @@ export const CaseHistory = React.memo(() => {
                   className="border-b border-white/5 hover:bg-white/5 transition-colors"
                 >
                   <td className="py-3 px-4 text-sm text-text-secondary">
-                    {formatCaseDate(entry.openedAt)}
+                    {formatCaseDate(entry.createdAt)}
                   </td>
                   <td className="py-3 px-4 text-sm font-medium text-white">
                     {entry.caseName}
                   </td>
                   <td className="py-3 px-4 text-sm font-medium text-white">
-                    {entry.item.name}
+                    <span className="mr-2">{entry.itemImage}</span>
+                    {entry.itemName}
                   </td>
                   <td className="py-3 px-4 text-sm">
                     <span
@@ -87,17 +87,17 @@ export const CaseHistory = React.memo(() => {
                         backgroundColor: `${rarityColor}20`,
                       }}
                     >
-                      {entry.item.rarity}
+                      {entry.itemRarity}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-sm font-medium text-accent-yellow">
-                    ${entry.item.price.toFixed(2)}
+                    ${entry.itemValue.toFixed(2)}
                   </td>
                   <td className="py-3 px-4 text-sm font-medium">
                     <span
                       className={isProfitable ? "text-success" : "text-error"}
                     >
-                      {isProfitable ? "+" : ""}${profit.toFixed(2)}
+                      {isProfitable ? "+" : ""}${entry.profit.toFixed(2)}
                     </span>
                   </td>
                 </tr>

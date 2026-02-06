@@ -63,15 +63,18 @@ export interface CaseOpenResponse {
 
 export interface CaseHistoryItem {
   id: string;
-  caseId: string;
+  createdAt: string;
   caseName: string;
-  item: CaseItem;
-  openedAt: string;
-  cost: number;
+  casePrice: number;
+  itemName: string;
+  itemValue: number;
+  itemRarity: ItemRarity;
+  itemImage: string;
+  profit: number;
 }
 
 export interface CaseHistoryResponse {
-  history: CaseHistoryItem[];
+  openings: CaseHistoryItem[];
 }
 
 export interface CaseHistoryQueryParams {

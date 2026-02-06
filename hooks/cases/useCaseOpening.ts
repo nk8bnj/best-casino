@@ -2,12 +2,13 @@
 
 import { useCallback } from "react";
 import { useCasesStore } from "@/store/cases.store";
-import { useCaseOpen } from "./useCasesQuery";
+import { useCaseOpen, useInvalidateCaseHistory } from "./useCasesQuery";
 import { generateRouletteStrip } from "@/lib/utils/cases";
 import { CaseGamePhase, type CaseItem } from "@/types/cases.types";
 
 export function useCaseOpening(caseId: string, caseItems: CaseItem[]) {
   const mutation = useCaseOpen(caseId);
+  const invalidateHistory = useInvalidateCaseHistory();
 
   const setPhase = useCasesStore((s) => s.setPhase);
   const setRouletteItems = useCasesStore((s) => s.setRouletteItems);
@@ -23,6 +24,7 @@ export function useCaseOpening(caseId: string, caseItems: CaseItem[]) {
 
       if (skipAnimation) {
         setPhase(CaseGamePhase.RESULT);
+        invalidateHistory();
         return;
       }
 
@@ -41,14 +43,16 @@ export function useCaseOpening(caseId: string, caseItems: CaseItem[]) {
     setRouletteItems,
     setWinnerIndex,
     setLastResult,
+    invalidateHistory,
   ]);
 
   const handleAnimationEnd = useCallback(() => {
     setPhase(CaseGamePhase.REVEALING);
     setTimeout(() => {
       setPhase(CaseGamePhase.RESULT);
+      invalidateHistory();
     }, 800);
-  }, [setPhase]);
+  }, [setPhase, invalidateHistory]);
 
   const handleTryAgain = useCallback(() => {
     reset();

@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { casesApi, CASES_QUERY_KEYS } from "@/lib/api/cases.api";
 import { QUERY_KEYS } from "@/lib/api/endpoints";
@@ -35,11 +36,18 @@ export function useCaseOpen(caseId: string) {
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.AUTH.CURRENT_USER,
       });
-      queryClient.invalidateQueries({
-        queryKey: CASES_QUERY_KEYS.history(),
-      });
     },
   });
+}
+
+export function useInvalidateCaseHistory() {
+  const queryClient = useQueryClient();
+
+  return useCallback(() => {
+    queryClient.invalidateQueries({
+      queryKey: [...CASES_QUERY_KEYS.base, "history"],
+    });
+  }, [queryClient]);
 }
 
 export function useCaseHistory(params?: CaseHistoryQueryParams) {
