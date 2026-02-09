@@ -20,6 +20,7 @@ export const CaseHistory = React.memo(() => {
   }
 
   const history = [...(data?.openings || [])];
+  const headers = ["Time", "Case", "Item", "Rarity", "Value", "Profit"];
 
   if (history.length === 0) {
     return (
@@ -39,24 +40,14 @@ export const CaseHistory = React.memo(() => {
         <table className="w-full">
           <thead>
             <tr className="border-b border-white/10">
-              <th className="text-left text-text-secondary text-sm font-medium py-3 px-4">
-                Time
-              </th>
-              <th className="text-left text-text-secondary text-sm font-medium py-3 px-4">
-                Case
-              </th>
-              <th className="text-left text-text-secondary text-sm font-medium py-3 px-4">
-                Item
-              </th>
-              <th className="text-left text-text-secondary text-sm font-medium py-3 px-4">
-                Rarity
-              </th>
-              <th className="text-left text-text-secondary text-sm font-medium py-3 px-4">
-                Value
-              </th>
-              <th className="text-left text-text-secondary text-sm font-medium py-3 px-4">
-                Profit
-              </th>
+              {headers.map((header) => (
+                <th
+                  key={header}
+                  className="text-left text-text-secondary text-sm font-medium py-3 px-4"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>

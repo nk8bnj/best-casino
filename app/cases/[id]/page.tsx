@@ -18,14 +18,6 @@ export default function CaseDetailPage() {
     }
   }, [isHydrated, isAuthenticated, router]);
 
-  if (!isHydrated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
   if (!isAuthenticated) {
     return null;
   }
