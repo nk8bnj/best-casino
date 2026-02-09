@@ -26,6 +26,8 @@ export function GameCard({ game }: GameCardProps) {
   const handleFreePlay = () => {
     if (game.slug === "crash") {
       router.push("/crash-game");
+    } else if (game.slug === "case") {
+      router.push("/cases");
     }
   };
   return (

@@ -3,7 +3,13 @@
 import { usePathname } from "next/navigation";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 
-const ALLOWED_PREFIXES = ["/dashboard", "/crash-game", "/games", "/game"];
+const ALLOWED_PREFIXES = [
+  "/dashboard",
+  "/crash-game",
+  "/games",
+  "/game",
+  "/cases",
+];
 
 export function Header() {
   const pathname = usePathname();

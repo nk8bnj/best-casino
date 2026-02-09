@@ -12,6 +12,12 @@ export const API_ENDPOINTS = {
     HISTORY: "/crash/history",
     BET_HISTORY: "/crash/bets/history",
   },
+  CASES: {
+    LIST: "/cases",
+    DETAIL: (id: string) => `/cases/${id}`,
+    OPEN: (id: string) => `/cases/${id}/open`,
+    HISTORY: "/cases/history",
+  },
 } as const;
 
 // Query keys for TanStack Query
@@ -29,5 +35,11 @@ export const QUERY_KEYS = {
       ["crash", "game-history", params] as const,
     betHistory: (params?: { limit?: number; offset?: number }) =>
       ["crash", "bet-history", params] as const,
+  },
+  CASES: {
+    list: () => ["cases", "list"] as const,
+    detail: (id: string) => ["cases", "detail", id] as const,
+    history: (params?: { limit?: number; offset?: number }) =>
+      ["cases", "history", params] as const,
   },
 } as const;

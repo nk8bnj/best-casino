@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  DashboardHeader,
   SideDrawer,
   GamesSection,
   LeaderboardSection,
@@ -63,9 +62,6 @@ function DashboardContent() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <DashboardHeader />
-
       {/* Side Drawer - mobile only */}
       <SideDrawer />
 
