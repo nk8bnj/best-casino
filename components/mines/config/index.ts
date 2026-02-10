@@ -1,0 +1,1 @@
+export { MinesConfig } from "./MinesConfig";
