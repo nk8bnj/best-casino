@@ -9,6 +9,7 @@ const ALLOWED_PREFIXES = [
   "/games",
   "/game",
   "/cases",
+  "/mines",
 ];
 
 export function Header() {

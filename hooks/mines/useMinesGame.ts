@@ -36,8 +36,23 @@ export function useMinesStart() {
 }
 
 export function useMinesReveal() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (data: MinesRevealRequest) => minesApi.reveal(data),
+    onSuccess: (result) => {
+      if (result.isMine) {
+        queryClient.invalidateQueries({
+          queryKey: MINES_QUERY_KEYS.active(),
+        });
+        queryClient.invalidateQueries({
+          queryKey: QUERY_KEYS.AUTH.CURRENT_USER,
+        });
+        queryClient.invalidateQueries({
+          queryKey: MINES_QUERY_KEYS.historyBase(),
+        });
+      }
+    },
   });
 }
 
@@ -54,7 +69,7 @@ export function useMinesCashout() {
         queryKey: QUERY_KEYS.AUTH.CURRENT_USER,
       });
       queryClient.invalidateQueries({
-        queryKey: MINES_QUERY_KEYS.history(),
+        queryKey: MINES_QUERY_KEYS.historyBase(),
       });
     },
   });
@@ -64,6 +79,6 @@ export function useMinesHistory(params?: MinesHistoryQueryParams) {
   return useQuery({
     queryKey: MINES_QUERY_KEYS.history(params),
     queryFn: () => minesApi.getHistory(params),
-    staleTime: 30000,
+    staleTime: 0,
   });
 }

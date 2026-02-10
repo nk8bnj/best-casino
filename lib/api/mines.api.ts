@@ -9,10 +9,26 @@ import type {
   MinesCashoutResponse,
   MinesActiveGame,
   MinesHistoryResponse,
+  MinesHistoryGame,
   MinesHistoryQueryParams,
 } from "@/types/mines.types";
 
 const MINES_BASE_PATH = "/mines";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeHistoryGame(raw: any): MinesHistoryGame {
+  return {
+    gameId: raw.gameId ?? raw.game_id ?? "",
+    amount: raw.betAmount ?? raw.bet_amount ?? raw.amount ?? 0,
+    minesCount: raw.minesCount ?? raw.mines_count ?? 0,
+    gridSize: raw.gridSize ?? raw.grid_size ?? 0,
+    multiplier:
+      raw.multiplier ?? raw.cashoutMultiplier ?? raw.cashout_multiplier ?? 0,
+    winAmount: raw.winAmount ?? raw.win_amount ?? 0,
+    status: raw.status ?? "lost",
+    createdAt: raw.createdAt ?? raw.created_at ?? "",
+  };
+}
 
 export const minesApi = {
   start: async (data: MinesStartRequest): Promise<MinesStartResponse> => {
@@ -67,10 +83,13 @@ export const minesApi = {
     });
 
     try {
-      return await apiClient.get<MinesHistoryResponse>(
+      const raw = await apiClient.get<{ games: unknown[] }>(
         `${MINES_BASE_PATH}/history?${queryParams}`,
         { requiresAuth: true }
       );
+      return {
+        games: (raw.games || []).map(normalizeHistoryGame),
+      };
     } catch (error: unknown) {
       if (
         error instanceof ApiException &&
@@ -89,6 +108,7 @@ export const minesApi = {
 export const MINES_QUERY_KEYS = {
   base: ["mines"] as const,
   active: () => [...MINES_QUERY_KEYS.base, "active"] as const,
+  historyBase: () => [...MINES_QUERY_KEYS.base, "history"] as const,
   history: (params?: MinesHistoryQueryParams) =>
     [...MINES_QUERY_KEYS.base, "history", params] as const,
 };

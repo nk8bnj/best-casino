@@ -34,7 +34,9 @@ const formatCurrency = (value: number | null | undefined) =>
   typeof value === "number" && !Number.isNaN(value) ? value.toFixed(2) : "0.00";
 
 const formatMultiplier = (value: number | null | undefined) =>
-  typeof value === "number" && !Number.isNaN(value) ? value.toFixed(2) : "--";
+  typeof value === "number" && !Number.isNaN(value) && value > 0
+    ? value.toFixed(2)
+    : "--";
 
 export const MinesHistory = React.memo(() => {
   const { data, isLoading } = useMinesHistory({ limit: 10, offset: 0 });
@@ -114,7 +116,9 @@ export const MinesHistory = React.memo(() => {
                   </td>
                   <td className="py-3 px-4 text-sm font-medium">
                     <span className={isWin ? "text-success" : "text-error"}>
-                      ${formatCurrency(isWin ? game.winAmount : 0)}
+                      {isWin
+                        ? `$${formatCurrency(game.winAmount)}`
+                        : `-$${formatCurrency(game.amount)}`}
                     </span>
                   </td>
                   <td className="py-3 px-4 text-sm font-medium">
