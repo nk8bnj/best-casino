@@ -21,15 +21,15 @@ export const MinesTile = React.memo(
     };
 
     const baseClasses =
-      "relative w-[100px] h-[100px] rounded-md transition-all duration-200 flex items-center justify-center";
+      "relative w-[40px] h-[40px] md:w-[100px] md:h-[100px] rounded-[8px] md:rounded-[16px] transition-all duration-200 flex items-center justify-center";
 
     const statusClasses: Record<TileStatus, string> = {
       hidden:
         "bg-background-dark border border-white/10 hover:border-white/30 hover:bg-white/5 cursor-pointer active:scale-95",
-      safe: "bg-gradient-to-b from-[#e8b730] to-[#c99a20] border border-yellow-600/40 rounded-md shadow-[inset_0_-3px_6px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.3)]",
-      mine: "bg-gradient-to-b from-[#f04060] to-[#d42050] border border-red-700/40 rounded-md shadow-[inset_0_-3px_6px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.2)] animate-pulse",
+      safe: "bg-gradient-to-b from-[#e8b730] to-[#c99a20] border border-yellow-600/40 rounded-[8px] md:rounded-[16px] shadow-[inset_0_-3px_6px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.3)]",
+      mine: "bg-gradient-to-b from-[#f04060] to-[#d42050] border border-red-700/40 rounded-[8px] md:rounded-[16px] shadow-[inset_0_-3px_6px_rgba(0,0,0,0.2),inset_0_2px_4px_rgba(255,255,255,0.2)] animate-pulse",
       "mine-revealed":
-        "bg-gradient-to-b from-[#f04060]/70 to-[#d42050]/70 border border-red-700/20 rounded-md opacity-70",
+        "bg-gradient-to-b from-[#f04060]/70 to-[#d42050]/70 border border-red-700/20 rounded-[8px] md:rounded-[16px] opacity-70",
     };
 
     const disabledClasses =

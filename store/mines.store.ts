@@ -25,6 +25,10 @@ interface MinesStore {
   cashoutResult: MinesCashoutResponse | null;
   setCashoutResult: (result: MinesCashoutResponse | null) => void;
 
+  // Mine positions revealed on loss or cashout
+  minePositions: number[];
+  setMinePositions: (positions: number[]) => void;
+
   // Betting
   betAmount: number;
   displayValue: string;
@@ -56,6 +60,7 @@ export const useMinesStore = create<MinesStore>()(
       isGameOver: false,
       revealedMinePosition: null,
       cashoutResult: null,
+      minePositions: [],
       betAmount: 10,
       displayValue: "10.00",
       minesCount: 3,
@@ -73,6 +78,7 @@ export const useMinesStore = create<MinesStore>()(
       setRevealedMinePosition: (position) =>
         set({ revealedMinePosition: position }),
       setCashoutResult: (result) => set({ cashoutResult: result }),
+      setMinePositions: (positions) => set({ minePositions: positions }),
 
       // Betting actions
       setBetAmount: (amount) => set({ betAmount: amount }),
@@ -116,6 +122,7 @@ export const useMinesStore = create<MinesStore>()(
           isGameOver: false,
           revealedMinePosition: null,
           cashoutResult: null,
+          minePositions: [],
           betAmount: 10,
           displayValue: "10.00",
           minesCount: 3,

@@ -31,6 +31,7 @@ export interface MinesRevealResponse {
   safeTilesLeft: number;
   gridSize: number;
   totalTiles: number;
+  minePositions?: number[];
 }
 
 export interface MinesCashoutRequest {

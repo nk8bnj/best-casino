@@ -20,6 +20,7 @@ export function useMinesActions() {
     (state) => state.setRevealedMinePosition
   );
   const setCashoutResult = useMinesStore((state) => state.setCashoutResult);
+  const setMinePositions = useMinesStore((state) => state.setMinePositions);
   const setMinesCount = useMinesStore((state) => state.setMinesCount);
   const setGridSize = useMinesStore((state) => state.setGridSize);
   const { data: userData } = useCurrentUser();
@@ -42,6 +43,7 @@ export function useMinesActions() {
         setIsGameOver(false);
         setRevealedMinePosition(null);
         setCashoutResult(null);
+        setMinePositions([]);
       }
     } catch {
       // ignore
@@ -53,6 +55,7 @@ export function useMinesActions() {
     setIsGameOver,
     setRevealedMinePosition,
     setCashoutResult,
+    setMinePositions,
   ]);
 
   const handleStartGame = useCallback(
@@ -71,6 +74,7 @@ export function useMinesActions() {
       setIsGameOver(false);
       setRevealedMinePosition(null);
       setCashoutResult(null);
+      setMinePositions([]);
 
       try {
         const data = await startMutation.mutateAsync({
@@ -103,6 +107,7 @@ export function useMinesActions() {
       setIsGameOver,
       setRevealedMinePosition,
       setCashoutResult,
+      setMinePositions,
       userData,
       gameState?.status,
       activeGame,
@@ -120,6 +125,9 @@ export function useMinesActions() {
           if (data.isMine) {
             setRevealedMinePosition(data.position);
             setIsGameOver(true);
+            if (data.minePositions) {
+              setMinePositions(data.minePositions);
+            }
             setGameState((prev) => {
               if (!prev) return prev;
               return {
@@ -156,6 +164,7 @@ export function useMinesActions() {
       {
         onSuccess: (data) => {
           setCashoutResult(data);
+          setMinePositions(data.minePositions);
           setGameState((prev) => {
             if (!prev) return prev;
             return {
