@@ -18,6 +18,11 @@ export const API_ENDPOINTS = {
     OPEN: (id: string) => `/cases/${id}/open`,
     HISTORY: "/cases/history",
   },
+  PLINKO: {
+    DROP: "/plinko/drop",
+    MULTIPLIERS: "/plinko/multipliers",
+    HISTORY: "/plinko/history",
+  },
 } as const;
 
 // Query keys for TanStack Query
@@ -41,5 +46,12 @@ export const QUERY_KEYS = {
     detail: (id: string) => ["cases", "detail", id] as const,
     history: (params?: { limit?: number; offset?: number }) =>
       ["cases", "history", params] as const,
+  },
+  PLINKO: {
+    base: ["plinko"] as const,
+    multipliers: (risk: string, lines: number) =>
+      ["plinko", "multipliers", risk, lines] as const,
+    history: (params?: { limit?: number; offset?: number }) =>
+      ["plinko", "history", params] as const,
   },
 } as const;
