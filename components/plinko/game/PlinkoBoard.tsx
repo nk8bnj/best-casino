@@ -317,9 +317,30 @@ export const PlinkoBoard = React.memo(() => {
 
           // ── landing in slot ───────────────────────────────────
           if (bp.y >= L.slotY - L.ballRadius) {
+            // Determine actual slot from where the ball physically landed
+            const actualSlot = Math.round(
+              (bp.x - L.startX - L.slotWidth / 2) / L.slotWidth
+            );
+            const clampedSlot = Math.max(
+              0,
+              Math.min(L.slotCount - 1, actualSlot)
+            );
             const slotCenterX =
-              L.startX + ball.slotIndex * L.slotWidth + L.slotWidth / 2;
+              L.startX + clampedSlot * L.slotWidth + L.slotWidth / 2;
             bp.x = slotCenterX;
+
+            // Update store so displayed multiplier/win match the visual slot
+            if (clampedSlot !== ball.slotIndex && multipliers.length > 0) {
+              const actualMultiplier =
+                multipliers[clampedSlot] ?? ball.multiplier;
+              const betAmount =
+                ball.multiplier !== 0 ? ball.winAmount / ball.multiplier : 0;
+              usePlinkoStore.getState().updateActiveBall(ball.id, {
+                slotIndex: clampedSlot,
+                multiplier: actualMultiplier,
+                winAmount: betAmount * actualMultiplier,
+              });
+            }
             bp.y = L.slotY - L.ballRadius - 2;
             bp.vx = 0;
             bp.vy = 0;
