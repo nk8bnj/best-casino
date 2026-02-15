@@ -156,7 +156,7 @@ export const PlinkoBoard = React.memo(() => {
       // ── multiplier slots ────────────────────────────────────────
       const highlightedSlots = new Set<number>();
       for (const [, bp] of ballPhysicsRef.current) {
-        if (bp.landed && now - bp.landedTime < 800) {
+        if (bp.landed && now - bp.landedTime < 200) {
           const idx = Math.round(
             ((bp.x - L.startX) / L.boardWidth) * (L.slotCount - 1)
           );
@@ -236,15 +236,6 @@ export const PlinkoBoard = React.memo(() => {
         }
 
         if (bp.landed) {
-          if (now - bp.landedTime < 600) {
-            ctx.beginPath();
-            ctx.arc(bp.x, bp.y, L.ballRadius, 0, Math.PI * 2);
-            ctx.fillStyle = "#f43f5e";
-            ctx.shadowColor = "#f43f5e";
-            ctx.shadowBlur = 10;
-            ctx.fill();
-            ctx.shadowBlur = 0;
-          }
           continue;
         }
 
@@ -350,7 +341,7 @@ export const PlinkoBoard = React.memo(() => {
             setTimeout(() => {
               usePlinkoStore.getState().removeActiveBall(ball.id);
               ballPhysicsRef.current.delete(ball.id);
-            }, 700);
+            }, 0);
             break;
           }
         }
