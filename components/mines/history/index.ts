@@ -1,0 +1,1 @@
+export { MinesHistory } from "./MinesHistory";
