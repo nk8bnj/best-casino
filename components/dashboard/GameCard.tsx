@@ -28,12 +28,14 @@ export function GameCard({ game }: GameCardProps) {
       router.push("/crash-game");
     } else if (game.slug === "case") {
       router.push("/cases");
+    } else if (game.slug === "plinko") {
+      router.push("/plinko");
     } else if (game.slug === "mines") {
       router.push("/mines");
     }
   };
   return (
-    <div className="relative rounded-[24px] overflow-hidden bg-gradient-to-b from-[#2a2555] to-[#1a1a2e] shadow-lg aspect-[4/5]">
+    <div className="relative rounded-[24px] overflow-hidden bg-linear-to-b from-[#2a2555] to-[#1a1a2e] shadow-lg aspect-[4/5]">
       {/* Tag */}
       {game.tag && (
         <div className="absolute top-4 left-4 z-10">

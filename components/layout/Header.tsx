@@ -9,6 +9,7 @@ const ALLOWED_PREFIXES = [
   "/games",
   "/game",
   "/cases",
+  "/plinko",
   "/mines",
 ];
 

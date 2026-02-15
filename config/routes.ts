@@ -4,5 +4,6 @@ export const ROUTES = {
   REGISTER: "/register",
   DASHBOARD: "/dashboard",
   CASES: "/cases",
+  PLINKO: "/plinko",
   MINES: "/mines",
 } as const;
