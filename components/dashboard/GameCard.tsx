@@ -30,6 +30,8 @@ export function GameCard({ game }: GameCardProps) {
       router.push("/cases");
     } else if (game.slug === "plinko") {
       router.push("/plinko");
+    } else if (game.slug === "mines") {
+      router.push("/mines");
     }
   };
   return (

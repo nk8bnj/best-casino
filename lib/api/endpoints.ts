@@ -12,6 +12,13 @@ export const API_ENDPOINTS = {
     HISTORY: "/crash/history",
     BET_HISTORY: "/crash/bets/history",
   },
+  MINES: {
+    START: "/mines/start",
+    REVEAL: "/mines/reveal",
+    CASHOUT: "/mines/cashout",
+    ACTIVE: "/mines/active",
+    HISTORY: "/mines/history",
+  },
   CASES: {
     LIST: "/cases",
     DETAIL: (id: string) => `/cases/${id}`,
@@ -40,6 +47,12 @@ export const QUERY_KEYS = {
       ["crash", "game-history", params] as const,
     betHistory: (params?: { limit?: number; offset?: number }) =>
       ["crash", "bet-history", params] as const,
+  },
+  MINES: {
+    base: ["mines"] as const,
+    active: () => ["mines", "active"] as const,
+    history: (params?: { limit?: number; offset?: number }) =>
+      ["mines", "history", params] as const,
   },
   CASES: {
     list: () => ["cases", "list"] as const,
