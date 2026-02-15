@@ -6,7 +6,11 @@ import { usePlinkoStore } from "@/store/plinko.store";
 import { useCurrentUser } from "@/hooks/api/useCurrentUser";
 import { plinkoApi, PLINKO_QUERY_KEYS } from "@/lib/api/plinko.api";
 import { QUERY_KEYS } from "@/lib/api/endpoints";
-import type { AnimatingBall } from "@/types/plinko.types";
+import type {
+  AnimatingBall,
+  PlinkoDropResponse,
+  PlinkoHistoryResponse,
+} from "@/types/plinko.types";
 
 export function usePlinkoActions() {
   const { data: userData } = useCurrentUser();
@@ -27,25 +31,68 @@ export function usePlinkoActions() {
     usePlinkoStore.getState().setIsDropping(true);
     usePlinkoStore.getState().setLastResult(null);
 
-    let completedAnimations = 0;
-    const animDuration = lines * 180 + 500;
+    const onAllDone = (data?: PlinkoDropResponse) => {
+      // Optimistically prepend the new game to history cache
+      if (data) {
+        const avgMultiplier =
+          data.drops.reduce((sum, d) => sum + d.multiplier, 0) /
+          data.drops.length;
 
-    const onAllDone = () => {
-      queryClient.invalidateQueries({
-        queryKey: PLINKO_QUERY_KEYS.base,
-      });
+        const optimisticEntry = {
+          _id: "optimistic-" + Date.now(),
+          betAmount,
+          ballsCount: balls,
+          riskLevel: risk,
+          linesCount: lines,
+          totalWin: data.totalWin,
+          avgMultiplier,
+          status: (data.totalWin > data.totalBet ? "won" : "lost") as
+            | "won"
+            | "lost",
+          createdAt: new Date().toISOString(),
+        };
+
+        queryClient.setQueryData<PlinkoHistoryResponse>(
+          PLINKO_QUERY_KEYS.history({ limit: 10, offset: 0 }),
+          (old) => ({
+            drops: [optimisticEntry, ...(old?.drops ?? [])].slice(0, 10),
+          })
+        );
+      }
+
       queryClient.invalidateQueries({
         queryKey: QUERY_KEYS.AUTH.CURRENT_USER,
       });
       usePlinkoStore.getState().setIsDropping(false);
+
+      // Still refetch history from server to replace optimistic data
+      setTimeout(() => {
+        queryClient.invalidateQueries({
+          queryKey: PLINKO_QUERY_KEYS.base,
+        });
+      }, 10000);
     };
 
-    for (let i = 0; i < balls; i++) {
-      setTimeout(() => {
-        plinkoApi
-          .drop({ amount: betAmount, balls: 1, risk, lines })
-          .then((data) => {
-            const drop = data.drops[0];
+    plinkoApi
+      .drop({ amount: betAmount, balls, risk, lines })
+      .then((data) => {
+        usePlinkoStore.getState().setLastResult(data);
+
+        // Watch for all balls to finish animating
+        let ballsAddedCount = 0;
+        const unsubscribe = usePlinkoStore.subscribe((state) => {
+          if (
+            ballsAddedCount === data.drops.length &&
+            state.activeBalls.length === 0
+          ) {
+            unsubscribe();
+            onAllDone(data);
+          }
+        });
+
+        // Stagger adding balls with 250ms delays for visual effect
+        data.drops.forEach((drop, i) => {
+          setTimeout(() => {
             const ball: AnimatingBall = {
               id: drop.dropId,
               path: drop.path,
@@ -57,24 +104,14 @@ export function usePlinkoActions() {
               done: false,
             };
             usePlinkoStore.getState().addActiveBall(ball);
-
-            // Wait for this ball's animation to finish before counting it as done
-            setTimeout(() => {
-              completedAnimations++;
-              if (completedAnimations === balls) {
-                onAllDone();
-              }
-            }, animDuration);
-          })
-          .catch((error) => {
-            console.error("[PlinkoActions] Drop error:", error);
-            completedAnimations++;
-            if (completedAnimations === balls) {
-              onAllDone();
-            }
-          });
-      }, i * 250);
-    }
+            ballsAddedCount++;
+          }, i * 250);
+        });
+      })
+      .catch((error) => {
+        console.error("[PlinkoActions] Drop error:", error);
+        onAllDone();
+      });
   }, [userData, queryClient]);
 
   return {

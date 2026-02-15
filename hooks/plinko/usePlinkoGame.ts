@@ -22,7 +22,7 @@ export function usePlinkoHistory(params?: HistoryQueryParams) {
   return useQuery({
     queryKey: PLINKO_QUERY_KEYS.history(params),
     queryFn: () => plinkoApi.getHistory(params),
-    staleTime: 30000,
+    staleTime: 0,
   });
 }
 

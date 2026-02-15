@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { usePlinkoHistory } from "@/hooks/plinko";
 
 const formatDate = (dateString: string) => {
@@ -13,7 +12,7 @@ const formatDate = (dateString: string) => {
   });
 };
 
-export const PlinkoHistory = React.memo(() => {
+export const PlinkoHistory = () => {
   const { data, isLoading } = usePlinkoHistory({ limit: 10, offset: 0 });
 
   if (isLoading) {
@@ -106,6 +105,4 @@ export const PlinkoHistory = React.memo(() => {
       </div>
     </div>
   );
-});
-
-PlinkoHistory.displayName = "PlinkoHistory";
+};
